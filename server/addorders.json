@@ -1,0 +1,29 @@
+[
+  {
+    "orderId": "4",
+    "customerName": "w",
+    "laundryWeight": "1",
+    "amountToPay": 150,
+    "date": "0001-01-01",
+    "serviceType": "Wash & Dry",
+    "status": "Completed"
+  },
+  {
+    "orderId": "1",
+    "customerName": "w",
+    "laundryWeight": "1",
+    "amountToPay": 150,
+    "date": "12/01/2025",
+    "serviceType": "Dry",
+    "status": "Processing"
+  },
+  {
+    "orderId": "2",
+    "customerName": "e",
+    "laundryWeight": "3",
+    "amountToPay": 150,
+    "date": "12/01/2025",
+    "serviceType": "Wash",
+    "status": "Processing"
+  }
+]

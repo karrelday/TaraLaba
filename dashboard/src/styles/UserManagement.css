@@ -1,0 +1,404 @@
+/* User Management Container */
+.user-management-container {
+  width: 87%;
+  height: 100vh;
+  margin-left: 210px;
+  margin-top: 80px;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+}
+
+.user-management-content {
+  margin-left: 190px;
+  padding: 2rem;
+}
+
+/* User Management Header */
+.user-management-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+
+.user-management-header h2 {
+  margin: 0;
+  font-weight: 500;
+  font-size: 24px;
+  color: black;
+}
+
+.add-user-btn {
+  background-color: #5577EF !important;
+  color: white !important;
+  padding: 10px 16px !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  box-shadow: 0 4px 10px rgba(120, 53, 228, 0.3) !important;
+}
+
+.add-user-btn:hover {
+  background-color: #9466e9 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(120, 53, 228, 0.4) !important;
+}
+
+/* Table Wrapper */
+.table-wrapper {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  background-color: #ffff;
+  border-radius: 12px;
+  width: 100%;
+  margin-bottom: 2rem;
+  box-shadow: 10px 10px 10px 0 rgba(138, 138, 138, 0.1);
+}
+
+.table-wrapper h3 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  color: black;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.table-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.search-field {
+  background-color: #F9FBFF !important;
+  color: black !important;
+  width: 240px !important;
+}
+
+.search-field input {
+  color: black !important;
+  font-size: 0.9rem !important;
+  padding: 8px 12px !important;
+}
+
+.search-field input::placeholder {
+  color: #29384B !important;
+  opacity: .7 !important;
+}
+
+/* User Management Table */
+.user-management-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: transparent;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.user-management-table th {
+  padding: 14px 16px;
+  text-align: left;
+  background-color: white;
+  color: #949497;
+  font-weight: 400;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  position: sticky;
+  z-index: 10;
+  border-bottom: 2px solid #CCCDD3;
+}
+
+.user-management-table td {
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 0.95rem;
+  font-weight: 450;
+  transition: all 0.2s ease;
+}
+
+.user-management-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.user-management-table tbody tr:hover {
+  background-color: rgba(120, 53, 228, 0.1);
+  transform: translateY(-1px);
+}
+
+.user-management-table tbody tr:nth-child(odd) {
+  background-color: #bbf3c8;
+}
+
+.user-management-table tbody tr:nth-child(odd):hover {
+  background-color: #95dba4;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.edit-btn {
+  background-color: rgb(120, 53, 228) !important;
+  color: white !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  padding: 8px !important;
+  border-radius: 6px !important;
+}
+
+.edit-btn:hover {
+  background-color: #9466e9 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(120, 53, 228, 0.3);
+}
+
+.delete-btn {
+  background-color: rgba(220, 53, 69, 0.8) !important;
+  color: white !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  padding: 8px !important;
+  border-radius: 6px !important;
+}
+
+.delete-btn:hover {
+  background-color: rgb(220, 53, 69) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+/* Table pagination */
+.table-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Modal Styles */
+.modal-box {
+  position: fixed !important; /* Changed from absolute to fixed for better positioning */
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  background-color: white !important;
+  border-radius: 12px !important;
+  padding: 0 !important; /* Remove padding here since it's handled by children */
+  width: 90% !important;
+  max-width: 500px !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+  outline: none !important;
+  animation: modalFadeIn 0.3s ease-out !important;
+  z-index: 1300 !important; /* Ensure modal appears above other content */
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Modal backdrop */
+.modal-backdrop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(2px) !important;
+  z-index: 1200 !important;
+}
+
+/* Add specific styles for modal title */
+.modal-title {
+  text-align: center !important;
+  padding: 16px 24px 8px !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  border-bottom: 2px solid #f0f0f0 !important;
+  margin-bottom: 8px !important;
+}
+
+/* Add padding to dialog content */
+.MuiDialogContent-root {
+  padding: 8px 24px 16px !important;
+}
+
+/* Form layout improvements */
+.form-field {
+  margin-bottom: 16px !important;
+}
+
+/* Form fields */
+.field-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.field-row .form-field {
+  flex: 1;
+}
+
+/* Modal buttons - improved alignment */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end; /* Changed to flex-end to match MUI DialogActions */
+  gap: 12px;
+  margin-top: 1rem;
+  padding: 8px 24px 16px; /* Add padding to match MUI DialogActions */
+}
+
+/* Primary button */
+.create-button {
+  background-color: #5577EF !important;
+  color: white !important;
+  padding: 10px 20px !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  min-width: 120px !important;
+  transition: all 0.2s ease !important;
+}
+
+.create-button:hover {
+  background-color: #4466DE !important;
+  box-shadow: 0 4px 12px rgba(85, 119, 239, 0.3) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Cancel button */
+.cancel-button {
+  border: 1px solid #5577EF !important;
+  color: #5577EF !important;
+  padding: 10px 20px !important;
+  border-radius: 8px !important;
+  background-color: transparent !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  min-width: 120px !important;
+  transition: all 0.2s ease !important;
+}
+
+.cancel-button:hover {
+  background-color: rgba(85, 119, 239, 0.05) !important;
+  box-shadow: 0 4px 12px rgba(85, 119, 239, 0.1) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Form field required asterisk styling */
+.MuiFormLabel-root.MuiInputLabel-root.Mui-required:after {
+  content: " *";
+  color: #f44336;
+}
+
+/* Error text styling */
+.error-text {
+  color: #f44336;
+  margin-left: 14px;
+  margin-right: 14px;
+  font-size: 0.75rem;
+  margin-top: 3px;
+  font-weight: 400;
+}
+
+/* Modal close button */
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  color: #5577EF;
+  transform: rotate(90deg);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .user-management-content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+  
+  .table-wrapper {
+    padding: 1rem;
+  }
+  
+  .user-management-table th,
+  .user-management-table td {
+    padding: 12px 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .user-management-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .table-wrapper h3 {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .search-field {
+    width: 100% !important;
+  }
+  
+  .user-management-container {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  
+  .hide-on-mobile {
+    display: none;
+  }
+  
+  .modal-box {
+    width: 95% !important;
+    padding: 0 !important;
+  }
+  
+  .field-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .modal-buttons {
+    flex-direction: column-reverse; /* Stack buttons with primary on top */
+  }
+  
+  .modal-buttons button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}

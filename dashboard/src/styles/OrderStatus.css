@@ -1,0 +1,422 @@
+/* Main layout with proper spacing and alignment */
+.orderPage {
+    width: calc(100% - 240px);
+    height: 100vh;
+    background-color: white;
+    margin-left: 240px;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+}
+
+.orderContainer {
+    padding: 25px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.header h2 {
+    margin: 0;
+    color: black;
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+.header p {
+    margin: 0;
+    color: #7f8c8d;
+}
+
+.header a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* Information layout with better alignment */
+.info {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.left {
+    background: #fff;
+    box-shadow: 11px 10px 25.5px rgba(161, 154, 154, 0.25);
+    padding: 25px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    width: 68%;
+}
+
+.left div {
+    width: 48%;
+}
+
+.left h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.left p {
+    margin: 10px 0;
+    color: #5d6d7e;
+    line-height: 1.6;
+}
+
+/* Right side panel with consistent spacing */
+.right {
+    width: 28%;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.addons, .payment {
+    padding: 20px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.right h4 {
+    margin: 0 0 12px 0;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.addons p, .payment p {
+    margin: 8px 0;
+    color: #5d6d7e;
+    font-size: 0.95rem;
+}
+
+/* Order info bar with improved spacing */
+.orderInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+}
+
+.orderInfo p {
+    margin: 0;
+    color: #5d6d7e;
+    font-size: 0.95rem;
+}
+
+.orderInfo strong {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+/* Status dropdown with better alignment */
+.status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status label {
+    margin: 0;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.statusDropdown {
+    padding: 10px 15px;
+    border: 1px solid #dde1e3;
+    border-radius: 8px;
+    background-color: white;
+    min-width: 200px;
+    font-size: 0.95rem;
+    color: #2c3e50;
+    transition: border-color 0.2s;
+}
+
+.statusDropdown:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.25);
+}
+
+/* Table styling with proper alignment */
+.tableContainer {
+    margin-top: 0;
+}
+
+.orderTable {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.orderTable th {
+    background: #3498db;
+    color: white;
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.orderTable th:first-child {
+    width: 60px;
+}
+
+.orderTable td {
+    padding: 15px 20px;
+    background: white;
+    color: #2c3e50;
+}
+
+.orderTable tr:not(:last-child) td {
+    border-bottom: 1px solid #eaeaea;
+}
+
+/* Button styling with consistent layout */
+.payActions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    margin-top: auto;
+}
+
+.payActions button {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    width: 100%;
+    text-align: center;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.payActions button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.payActions button:active {
+    transform: translateY(0);
+}
+
+.add {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.add:hover {
+    background-color: #27ae60;
+}
+
+.print {
+    background-color: #3498db;
+    color: white;
+}
+
+.print:hover {
+    background-color: #2980b9;
+}
+
+.download {
+    background-color: #f39c12;
+    color: white;
+}
+
+.download:hover {
+    background-color: #e67e22;
+}
+
+.save {
+    background-color: #9b59b6;
+    color: white;
+}
+
+.save:hover {
+    background-color: #8e44ad;
+}
+
+.cancel {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.cancel:hover {
+    background-color: #c0392b;
+}
+
+.status-text {
+    padding: 10px 15px;
+    border: 1px solid #dde1e3;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    min-width: 200px;
+    font-size: 0.95rem;
+    color: #2c3e50;
+}
+
+/* No order state with better styling */
+.no-order {
+    text-align: center;
+    margin-top: 150px;
+    color: #7f8c8d;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+@media print {
+    body * {
+      visibility: hidden;
+    }
+    .info, .info * {
+      visibility: visible;
+    }
+    .info {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+    .payActions {
+      display: none !important;
+    }
+}
+
+/* Responsive design with better breakpoints */
+@media (max-width: 1280px) {
+    .orderPage {
+        width: calc(100% - 220px);
+        margin-left: 220px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .info {
+        flex-direction: column;
+    }
+    
+    .left, .right {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .orderPage {
+        width: 100%;
+        margin-left: 0;
+    }
+    
+    .left {
+        flex-direction: column;
+        padding: 20px;
+    }
+    
+    .left div {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .left div:last-child {
+        margin-bottom: 0;
+    }
+    
+    .orderInfo {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 20px;
+    }
+    
+    .status {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .statusDropdown {
+        flex-grow: 1;
+    }
+    
+    .orderTable th, .orderTable td {
+        padding: 12px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .orderPage {
+        padding: 10px;
+    }
+    
+    .header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .left, .right, .orderInfo {
+        padding: 15px;
+    }
+    
+    .orderTable th, .orderTable td {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+    
+    .status {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .statusDropdown {
+        width: 100%;
+    }
+
+
+    .modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+.modal {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  min-width: 250px;
+  text-align: center;
+}
+
+
+}

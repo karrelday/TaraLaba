@@ -1,0 +1,642 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.home {
+  width: 87%;
+  height: 100vh;
+  margin-left: 27.6vh;
+  margin-top: 80px;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+}
+
+.content {
+  margin-left: 190px; 
+  padding: 2rem;
+}
+
+/* Dashboard Styles */
+.dashboard {
+  max-width: 1200px;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 2rem;
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-weight: 500;
+  font-size: 24px;
+  color: black;
+}
+
+.dashboard-header .add-btn {
+  background-color: #5577EF;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  text-transform: none;
+  box-shadow: 0 4px 10px rgba(120, 53, 228, 0.3);
+}
+
+.dashboard-header .add-btn:hover {
+  background-color: #9466e9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(120, 53, 228, 0.4);
+}
+
+/* Enhanced Table Styling */
+.revenue-table {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  background-color: #ffff;
+  border-radius: 12px;
+  width: 100%;
+  margin-bottom: 2rem;
+  box-shadow: 10px 10px 10px 0 rgba(138, 138, 138, 0.1);
+}
+
+.revenue-table h3 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  color: black;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.revenue-table .table-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.revenue-table .search-field {
+  background-color: #F9FBFF;
+  color: black;
+  width: 240px;
+}
+
+.revenue-table .search-field input {
+  color: black;
+  font-size: 0.9rem;
+  padding: 8px 12px;
+}
+
+.revenue-table .search-field input::placeholder {
+  color: #29384B;
+  opacity: .7;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: transparent;
+  border-radius: 8px;
+  overflow: hidden;
+
+}
+
+.revenue-table th {
+  padding: 14px 16px;
+  text-align: left;
+  background-color: white;
+  color: #949497;
+  font-weight: 400;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  position: sticky;
+  z-index: 10;
+  border-bottom: 2px solid #CCCDD3;
+}
+
+.revenue-table td {
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 0.95rem;
+  font-weight: 450;
+  transition: all 0.2s ease;
+}
+
+.revenue-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.revenue-table tbody tr:hover {
+  background-color: rgba(120, 53, 228, 0.1);
+  transform: translateY(-1px);
+}
+
+.revenue-table tbody tr:nth-child(odd) {
+  background-color: #bbf3c8;
+}
+
+.revenue-table tbody tr:nth-child(odd):hover {
+  background-color: #95dba4;
+}
+
+/* Status indicators */
+.status-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.status-active {
+  background-color: #10b981; /* green */
+}
+
+.status-processing {
+  background-color: #f59e0b; /* amber */
+}
+
+.status-pending {
+  background-color: #3498db; /* blue */
+}
+
+.status-ready {
+  background-color: #2ecc71; /* green */
+}
+
+.status-delivered {
+  background-color: #9b59b6; /* purple */
+}
+
+.status-cancelled {
+  background-color: #e74c3c; /* red */
+}
+
+/* Action buttons container */
+.row-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.view-btn {
+  background-color: rgb(120, 53, 228);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.view-btn:hover {
+  background-color: #9466e9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(120, 53, 228, 0.3);
+}
+
+.delete-btn {
+  background-color: rgba(220, 53, 69, 0.8);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: 0.3s;
+}
+
+.delete-btn:hover {
+  background-color: rgb(220, 53, 69);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.cancel-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: 0.3s;
+}
+
+.cancel-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+/* Pagination Styles for Home.css */
+
+.table-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding: 15px 0;
+  border-top: 1px solid #e0e0e0;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pagination-info {
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0 10px;
+}
+
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #333;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #f5f5f5;
+  border-color: #999;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-btn.active {
+  background-color: #1976d2;
+  color: white;
+  border-color: #1976d2;
+  box-shadow: 0 2px 4px rgba(25, 118, 210, 0.3);
+}
+
+.pagination-btn:disabled {
+  background-color: #f5f5f5;
+  color: #ccc;
+  border-color: #eee;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.pagination-btn.nav-btn {
+  background-color: #f8f9fa;
+  border-color: #ddd;
+}
+
+.pagination-btn.nav-btn:hover:not(:disabled) {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.pagination-ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  color: #666;
+  font-weight: bold;
+  user-select: none;
+}
+/* Modal Styles */
+.home-modal-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  outline: none;
+  animation: modalFadeIn 0.3s ease-out;
+  }
+  @keyframes modalFadeIn {
+  from {
+  opacity: 0;
+  transform: translate(-50%, -48%);
+  }
+  to {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+  }
+  }
+  .modal-box h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1.6rem;
+  font-weight: 600;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0.8rem;
+  }
+  .modal-box .MuiFormControl-root {
+  margin-bottom: 1rem;
+  }
+  .modal-box .MuiInputLabel-root {
+  color: #666;
+  font-weight: 500;
+  }
+  .modal-box .MuiOutlinedInput-root {
+  border-radius: 8px;
+  }
+  .modal-box .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #5577EF;
+  }
+  .modal-box .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #5577EF;
+  border-width: 2px;
+  }
+  .modal-box .MuiInputAdornment-root .MuiSvgIcon-root {
+  color: #5577EF;
+  }
+  .modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 2rem;
+  }
+  .home-modal-buttons button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  text-transform: none;
+  transition: all 0.2s ease;
+  }
+  .home-modal-buttons button:first-child {
+  background-color: #5577EF;
+  color: white;
+  }
+  .home-modal-buttons button:first-child:hover {
+  background-color: #4466DE;
+  box-shadow: 0 4px 12px rgba(85, 119, 239, 0.3);
+  transform: translateY(-2px);
+  }
+  .home-modal-buttons button:last-child {
+  border: 1px solid #5577EF;
+  color: #5577EF;
+  }
+  .home-modal-buttons button:last-child:hover {
+  background-color: rgba(85, 119, 239, 0.05);
+  box-shadow: 0 4px 12px rgba(85, 119, 239, 0.1);
+  transform: translateY(-2px);
+  }
+  .home-modal-buttons button:disabled {
+  background-color: #ccc !important;
+  color: #fff !important;
+  border-color: #ccc !important;
+  cursor: not-allowed;
+  box-shadow: none !important;
+  transform: none !important;
+  }
+  .error-text {
+  color: #f44336;
+  margin-left: 14px;
+  margin-right: 14px;
+  font-size: 0.75rem;
+  margin-top: 3px;
+  font-weight: 400;
+  }
+  /* Form field required asterisk styling */
+  .MuiFormLabel-root.MuiInputLabel-root.Mui-required:after {
+  content: " *";
+  color: #f44336;
+  }
+  /* Date input styling */
+  .home-modal-box input[type="date"] {
+  font-family: inherit;
+  padding-right: 10px;
+  }
+  /* Form group spacing */
+  .form-group {
+  margin-bottom: 1.5rem;
+  }
+  /* Loading spinner in button */
+  .home-modal-buttons .MuiCircularProgress-root {
+  color: white;
+  }
+  /* Modal backdrop */
+  .MuiBackdrop-root {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  }
+  /* Modal close button */
+  .home-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  }
+  .home-modal-close:hover {
+  color: #5577EF;
+  transform: rotate(90deg);
+  }
+  /* Responsive adjustments */
+  @media (max-width: 600px) {
+  .home-modal-box {
+  width: 95%;
+  padding: 1.5rem;
+  }
+  .home-modal-buttons {
+  flex-direction: column;
+  }
+  .home-modal-buttons button {
+  width: 100%;
+  }
+  }
+/* Empty state styling */
+.empty-table-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.empty-table-state svg {
+  opacity: 0.5;
+  margin-bottom: 1rem;
+}
+
+.empty-table-state p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.empty-table-state button {
+  background-color: rgb(120, 53, 228) !important;
+  color: white !important;
+  border: none;
+  padding: 10px 16px !important;
+  border-radius: 6px !important;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 500 !important;
+  text-transform: none !important;
+}
+
+
+/* Hide calendar picker indicator */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+  
+  .revenue-table {
+    padding: 1rem;
+  }
+  
+  .revenue-table th, .revenue-table td {
+    padding: 12px 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .dashboard-cards {
+    flex-direction: column;
+  }
+  
+  .revenue-table h3 {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .revenue-table .search-field {
+    width: 100%;
+  }
+  
+  .table-pagination {
+    justify-content: center;
+  }
+}
+
+/* Pagination Styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 10px;
+}
+
+.pagination-btn {
+  min-width: 40px;
+  height: 40px;
+  border: none;
+  background-color: white;
+  color: #2c3e50;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-btn.active {
+  background-color: #5577EF;
+  color: white;
+}
+
+.pagination-btn.active:hover {
+  background-color: #4466DE;
+}
+
+/* Responsive pagination */
+@media (max-width: 768px) {
+  .pagination {
+    gap: 4px;
+  }
+
+  .pagination-btn {
+    min-width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pagination {
+    flex-wrap: wrap;
+  }
+}

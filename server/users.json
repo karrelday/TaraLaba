@@ -1,0 +1,18 @@
+[
+  {
+    "userId": "",
+    "firstName": "Mark William",
+    "lastName": "Pajarillo",
+    "middleName": "",
+    "userName": "admin",
+    "password": "admin"
+  },
+  {
+    "userId": "2",
+    "firstName": "William",
+    "lastName": "Pajarillo",
+    "middleName": "",
+    "userName": "will",
+    "password": "will"
+  }
+]

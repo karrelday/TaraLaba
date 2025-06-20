@@ -1,0 +1,235 @@
+/* Base sidebar styles - Updated to match login page */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 350px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 10px 0 12px 0 rgba(0, 0, 0, 0.1);
+  background-color: white;
+  z-index: 100;
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 32px;
+  color: black;
+  padding-top: 10%;
+  padding-bottom: 50%;
+}
+
+.sidebar p {
+  color: #858585;
+  margin-left: 7px;
+  font-size: 20px;
+  font-weight: 350;
+
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  margin: 10px 15px;
+  transition: all 0.2s ease-in-out;
+  padding: 8px;
+  border-radius: 8px;
+  padding-left: 40px; 
+}
+
+.menu .icon {
+  margin-left: 10px;
+  color: #858585;
+}
+
+.menu:hover {
+  transform: scale(1.05);
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.menu.active {
+  background-color: #5577EF;
+}
+
+.menu.active .icon,
+.menu.active p {
+  color: white;
+}
+
+.link {
+  text-decoration: none;
+  width: 100%;
+}
+
+/* Toggle button for all screen sizes - Updated to match login button */
+.toggle-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 101;
+  background-color: #0206E3;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  color: white;
+}
+
+/* Main content area */
+.main-content {
+  transition: margin-left 0.3s ease;
+  padding: 20px;
+}
+
+.main-content.sidebar-open {
+  margin-left: 250px;
+  width: calc(100% - 250px);
+}
+
+.main-content.sidebar-closed {
+  margin-left: 70px;
+  width: calc(100% - 70px);
+}
+
+/* Backdrop for mobile sidebar */
+.sidebar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  display: none;
+}
+
+/* Add a menu container to enable scrolling */
+.menu-items {
+  overflow-y: auto;
+  height: calc(100vh - 80px);
+  padding-top: 10px;
+}
+
+/* Responsive styles for wide screens */
+@media screen and (min-width: 769px) {
+  .sidebar.open {
+    width: 350px;
+  }
+  
+  .sidebar.closed {
+    width: 70px;
+  }
+  
+  .sidebar.closed h2 {
+    display: none;
+  }
+  
+  .sidebar.closed .menu p {
+    display: none;
+  }
+  
+  .main-content {
+    margin-left: 250px;
+  }
+  
+  .main-content.sidebar-closed {
+    margin-left: 70px;
+  }
+}
+
+/* Mobile styles */
+@media screen and (max-width: 768px) {
+  /* Enable backdrop on mobile */
+  .sidebar-backdrop {
+    display: block;
+  }
+  
+  /* Adjust toggle button to be more visible */
+  .toggle-btn {
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    background-color: #0206E3;
+    color: white;
+  }
+  
+  /* Mobile sidebar positioning */
+  .sidebar {
+    width: 50px;
+    transform: translateX(-250px);
+    z-index: 100;
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .sidebar.closed {
+    transform: translateX(-100%);
+    width: 0;
+  }
+  
+  /* Fix content positioning */
+  .main-content {
+    margin-left: 0 !important;
+    width: 90% !important;
+    padding-left: 10px;
+    padding-right: 10px;
+    transition: opacity 0.3s ease;
+  }
+  
+  .main-content.sidebar-open {
+    opacity: 0.8;
+  }
+
+  /* Adjust dashboard container padding */
+  .dashboard-container {
+    padding-top: 60px;
+  }
+}
+
+/* Additional fixes for extra small screens */
+@media screen and (max-width: 480px) {
+  .toggle-btn {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .sidebar {
+    width: 450px;
+    transform: translateX(-230px);
+  }
+  
+  .sidebar.open {   
+    transform: translateX(0);
+  }
+  
+  /* Reduce padding for smaller screens */
+  .menu {
+    margin: 8px 12px;
+    padding: 6px;
+  }
+  
+  .dashboard-container {
+    padding-top: 50px;
+  }
+  
+  .main-content {
+    padding: 15px 10px;
+  }
+}
+
+/* Fix for app container layout */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}

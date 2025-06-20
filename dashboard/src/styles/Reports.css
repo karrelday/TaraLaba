@@ -1,0 +1,416 @@
+/* Reports Container */
+.reports-container {
+  width: 1200px;
+  padding: 24px;
+  overflow-y: auto;
+  min-height: 100vh;
+  margin-left: 380px !important; /* Reset margin-left */
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background-color: #f8fafc;
+}
+
+/* Header Section */
+.reports-header {
+  margin-bottom: 32px;
+  width: 100%;
+}
+
+.reports-header > div:first-child {
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+}
+
+.reports-header h1 {
+  color: #1e293b !important;
+  font-weight: 700;
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.reports-header button {
+  background-color: rgb(120, 53, 228);
+  color: white !important;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(120, 53, 228, 0.3);
+}
+
+.reports-header button:hover {
+  background-color: rgb(100, 43, 208);
+  box-shadow: 0 4px 12px rgba(120, 53, 228, 0.4);
+}
+
+/* Filters Section */
+.reports-filters {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.reports-filters .MuiFormControl-root,
+.reports-filters .MuiTextField-root {
+  min-width: 200px;
+  flex: 1;
+}
+
+.reports-filters .MuiOutlinedInput-root {
+  border-radius: 8px;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.reports-filters .MuiOutlinedInput-root.Mui-focused {
+  background: white;
+  box-shadow: 0 0 0 2px rgba(120, 53, 228, 0.2);
+}
+
+.reports-filters button {
+  border: none;
+  padding: 14px 28px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(120, 53, 228, 0.3);
+}
+
+/* Metric Cards */
+.metric-card {
+  padding: 24px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+}
+
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.metric-card:nth-child(1) {
+  border-left-color: #3b82f6;
+}
+
+.metric-card:nth-child(2) {
+  border-left-color: #f59e0b;
+}
+
+.metric-card:nth-child(3) {
+  border-left-color: #10b981;
+}
+
+.metric-card:nth-child(4) {
+  border-left-color: #ef4444;
+}
+
+.metric-card .MuiTypography-subtitle1 {
+  color: #64748b;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.metric-card .MuiTypography-h4 {
+  color: #1e293b;
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+/* Chart Containers */
+.chart-container {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  min-height: 400px;
+  transition: all 0.3s ease;
+}
+
+.chart-container:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.chart-container .MuiTypography-h6 {
+  color: #1e293b;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+/* Service Distribution */
+.service-distribution {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.service-item {
+  position: relative;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.service-item:hover {
+  background: #f1f5f9;
+  transform: translateX(4px);
+}
+
+.service-item .MuiTypography-body1 {
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 4px;
+  position: relative;
+  z-index: 2;
+}
+
+.service-item .MuiTypography-h6 {
+  color: #667eea;
+  font-weight: 700;
+  font-size: 1.1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.service-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(102, 126, 234, 0.1), rgba(102, 126, 234, 0.05));
+  border-radius: 8px;
+  z-index: 1;
+  transition: all 0.6s ease;
+}
+
+/* Daily Revenue Chart */
+.daily-revenue {
+  margin-top: 16px;
+  height: 300px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  overflow-x: auto;
+}
+
+.revenue-item {
+  flex: 1;
+  min-width: 40px; /* Reduced from 60px for better fit in the smaller container */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.revenue-item .MuiTypography-body2 {
+  color: #64748b;
+  font-weight: 500;
+  font-size: 0.75rem; /* Reduced from 0.8rem */
+  white-space: nowrap;
+}
+
+.revenue-item .MuiTypography-body1 {
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 0.8rem; /* Reduced from 0.85rem */
+  white-space: nowrap;
+}
+
+.revenue-bar {
+  width: 100%;
+  max-width: 24px; /* Reduced from 32px for better fit */
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  border-radius: 4px 4px 0 0;
+  transition: all 0.6s ease;
+  min-height: 4px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.revenue-bar:hover {
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+}
+
+/* Grid Spacing */
+.MuiGrid-container {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.MuiGrid-item {
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
+
+/* Snackbar Styling */
+.MuiSnackbar-root {
+  z-index: 1400;
+}
+
+.MuiAlert-root {
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+/* Loading State */
+.MuiCircularProgress-root {
+  color: #667eea;
+}
+
+/* Main wrapper adjustments */
+.reports-component-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.reports-main-content {
+  flex-grow: 1;
+  margin-left: 240px; /* Adjust based on sidebar width */
+  background-color: #f8fafc;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .reports-main-content {
+    margin-left: 220px;
+  }
+  
+  .reports-container {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 960px) {
+  .reports-main-content {
+    margin-left: 0;
+  }
+  
+  .reports-container {
+    padding: 16px;
+  }
+  
+  .reports-header h1 {
+    font-size: 2rem;
+  }
+  
+  .reports-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .reports-filters .MuiFormControl-root,
+  .reports-filters .MuiTextField-root {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .chart-container {
+    min-height: 350px;
+    padding: 20px;
+  }
+  
+  .metric-card {
+    height: 120px;
+    padding: 20px;
+  }
+  
+  .metric-card .MuiTypography-h4 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .reports-container {
+    padding: 12px;
+  }
+  
+  .reports-header > div:first-child {
+    padding: 20px;
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 16px;
+  }
+  
+  .reports-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .daily-revenue {
+    height: 250px;
+    padding: 16px;
+  }
+  
+  .revenue-item .MuiTypography-body2,
+  .revenue-item .MuiTypography-body1 {
+    font-size: 0.7rem;
+  }
+  
+  .metric-card {
+    height: 110px;
+    padding: 16px;
+  }
+  
+  .metric-card .MuiTypography-h4 {
+    font-size: 1.3rem;
+  }
+  
+  .chart-container {
+    padding: 16px;
+  }
+  
+  .service-item {
+    padding: 12px;
+  }
+}
+
+/* Custom Scrollbar */
+.reports-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.reports-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.reports-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #667eea, #764ba2);
+  border-radius: 3px;
+}
+
+.reports-container::-webkit-scrollbar-thumb:hover { 
+  background: linear-gradient(180deg, #5a67d8, #6b46c1);
+}
