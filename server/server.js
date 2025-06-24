@@ -637,7 +637,9 @@ app.put("/notifications/:notificationId/read", authenticateUser, async (req, res
 });
 
 // Start the server
-const port = 1337;
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+const PORT = 1337;
+const HOST = '0.0.0.0'; // Listen on all network interfaces
+
+app.listen(PORT, HOST, () => {
+  console.log(`Server running at http://${HOST}:${PORT}`);
 });
