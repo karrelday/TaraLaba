@@ -33,7 +33,7 @@ const Navbar = () => {
     if (userId) {
       const fetchUser = async () => {
         try {
-          const response = await axios.get(`http://localhost:1337/user/${userId}`);
+          const response = await axios.get(`http://192.168.9.27:1337/user/${userId}`);
           setUser(response.data);
         } catch (error) {
           console.error("Error fetching user:", error);
@@ -47,7 +47,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get("http://localhost:1337/notifications", {
+        const response = await axios.get("http://192.168.9.27:1337/notifications", {
           headers: { 'user-id': localStorage.getItem('userId') }
         });
         setNotifications(response.data);

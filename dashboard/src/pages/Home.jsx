@@ -129,7 +129,7 @@ function Home() {
       try {
         const userId = localStorage.getItem('userId');
         if (userId) {
-          const response = await axios.get(`http://localhost:1337/fetchusers/${userId}`);
+          const response = await axios.get(`http://192.168.9.27:1337/fetchusers/${userId}`);
           setCurrentUser(response.data);
         }
       } catch (error) {
@@ -145,7 +145,7 @@ function Home() {
       const userId = localStorage.getItem('userId');
       const userRole = localStorage.getItem('userRole');
       
-      const response = await axios.get("http://localhost:1337/fetchorder", {
+      const response = await axios.get("http://192.168.9.27:1337/fetchorder", {
         headers: { 'user-id': userId }
       });
       
@@ -242,7 +242,7 @@ function Home() {
 
       setLoading(true);
       const { data } = await axios.post(
-        "http://localhost:1337/addorder",
+        "http://192.168.9.27:1337/addorder",
         newOrder,
         {
           headers: {
@@ -290,7 +290,7 @@ function Home() {
       // Use MongoDB _id if available, otherwise use orderId
       const idToDelete = order._id || order.orderId;
       
-      await axios.delete(`http://localhost:1337/deleteorder/${idToDelete}`);
+      await axios.delete(`http://192.168.9.27:1337/deleteorder/${idToDelete}`);
       
       // Update local state after successful deletion
       setOrders(prevOrders => prevOrders.filter(o => o.orderId !== order.orderId));
@@ -379,7 +379,7 @@ function Home() {
       setLoading(true);
       const userId = localStorage.getItem('userId');
       
-      const response = await axios.put(`http://localhost:1337/updateorder/${order._id}`, {
+      const response = await axios.put(`http://192.168.9.27:1337/updateorder/${order._id}`, {
         status: "Cancelled"
       }, {
         headers: { 

@@ -52,7 +52,7 @@ function OrderStatus() {
     }
     try {
       const userId = localStorage.getItem('userId');
-      const response = await axios.put(`http://localhost:1337/updateorder/${order._id}`, {
+      const response = await axios.put(`http://192.168.9.27:1337/updateorder/${order._id}`, {
         status: status
       }, {
         headers: { 
@@ -91,7 +91,7 @@ function OrderStatus() {
     const orderId = order.orderId || order.id;
     setIsDownloading(true);
     try {
-      const response = await axios.get(`http://localhost:1337/receipt/${orderId}`, {
+      const response = await axios.get(`http://192.168.9.27:1337/receipt/${orderId}`, {
         headers: { 'user-id': localStorage.getItem('userId') },
         responseType: 'blob'
       });
@@ -115,7 +115,7 @@ function OrderStatus() {
     if (!window.confirm("Are you sure you want to cancel this order?")) return;
     try {
       const userId = localStorage.getItem('userId');
-      const response = await axios.put(`http://localhost:1337/updateorder/${order._id}`, {
+      const response = await axios.put(`http://192.168.9.27:1337/updateorder/${order._id}`, {
         status: "Cancelled"
       }, {
         headers: { 
