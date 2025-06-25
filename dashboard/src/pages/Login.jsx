@@ -151,7 +151,7 @@ function Login() {
             </button>
             <div className="form-footer">
               <div className="signup-link">
-                <span>New to LaundroTrack?</span>
+                <span>New to TaraLaba?</span>
                 <a href="#" onClick={navigateToSignup}>
                   {" "}
                   <u>Sign Up</u>

@@ -82,7 +82,7 @@ function SignUp() {
     <div className='signupbody'>
       <div className='signup'>
         <div className='signup-box'>
-          <h3 className='signUpName'>LaundroTrack</h3>
+          <h3 className='signUpName'>TaraLaba</h3>
           <h2 className='createAccount'>Create Account</h2>  
           <form onSubmit={handleSignUp} className='form'>
             <div className="name-fields">

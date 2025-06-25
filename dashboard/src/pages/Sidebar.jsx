@@ -97,7 +97,7 @@ function Sidebar({ onToggle }) {
       )}
 
       <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
-        <h2>LaundroTrack</h2>
+        <h2>TaraLaba</h2>
         
         <div className="menu-items">
           <div className={`menu ${isActive("/home")}`}>
