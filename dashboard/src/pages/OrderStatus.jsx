@@ -245,9 +245,10 @@ function OrderStatus() {
                   <>
                     <br />
                     <span>
-                      Acc#: {order.paymentAccNumber} <br />
-                      Name: {order.paymentAccName} <br />
-                      Amount: ₱{order.paymentAmount}
+                      <strong>Payment Method:</strong> {order.paymentMethod} <br />
+                      <strong>Account Number:</strong> {order.paymentAccNumber} <br />
+                      <strong>Account Name:</strong> {order.paymentAccName} <br />
+                      <strong>Amount:</strong> ₱{order.amountToPay}
                     </span>
                   </>
                 )}

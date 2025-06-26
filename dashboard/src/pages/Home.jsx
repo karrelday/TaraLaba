@@ -37,6 +37,9 @@ function Home() {
   const [isCustomer, setIsCustomer] = useState(localStorage.getItem('userRole') === 'customer');
   const [currentUser, setCurrentUser] = useState(null);
   const [showAddPaymentMethodModal, setShowAddPaymentMethodModal] = useState(false);
+  const [orderPaymentMethod, setOrderPaymentMethod] = useState(""); // "BDO", "PNB", "GCash"
+  const [orderPaymentAccNumber, setOrderPaymentAccNumber] = useState("");
+  const [orderPaymentAccName, setOrderPaymentAccName] = useState("");
   const [paymentMethods, setPaymentMethods] = useState(() => {
     // Optionally load from localStorage or backend
     const stored = localStorage.getItem('paymentMethods');
@@ -262,9 +265,14 @@ function Home() {
         return;
       }
 
+      const selectedMethod = paymentMethods.find(pm => pm.name === orderPaymentMethod);
+
       const newOrder = {
         ...formData,
-        status: "Processing"
+        status: "Processing",
+        paymentMethod: orderPaymentMethod,
+        paymentAccNumber: orderPaymentAccNumber,
+        paymentAccName: orderPaymentAccName
       };
 
       setLoading(true);
@@ -661,18 +669,7 @@ function Home() {
             )}
           </div>
 
-          {isCustomer && paymentMethods.length > 0 && (
-            <div className="user-payment-methods" style={{ marginBottom: 16 }}>
-              <h4>Your Payment Methods:</h4>
-              <ul>
-                {paymentMethods.map((pm, idx) => (
-                  <li key={idx}>
-                    <strong>{pm.name}</strong> - {pm.accNumber} ({pm.accName})
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          
         </div>
       </div>
 
@@ -804,38 +801,43 @@ function Home() {
       <Modal open={showAddPaymentMethodModal} onClose={() => setShowAddPaymentMethodModal(false)}>
         <Box className="home-modal-box" sx={{ maxWidth: 400 }}>
           <h3>Add Payment Method</h3>
-          <TextField
-            label="Payment Method Name"
-            placeholder="e.g. GCash, BDO, PNB"
-            fullWidth
-            margin="normal"
-          />
+          <FormControl fullWidth margin="normal" required>
+            <InputLabel>Payment Method</InputLabel>
+            <Select
+              value={orderPaymentMethod}
+              label="Payment Method"
+              onChange={e => setOrderPaymentMethod(e.target.value)}
+            >
+              <MenuItem value="BDO">BDO</MenuItem>
+              <MenuItem value="PNB">PNB</MenuItem>
+              <MenuItem value="GCash">GCash</MenuItem>
+            </Select>
+          </FormControl>
           <TextField
             label="Account Number"
             placeholder="Enter Account Number"
             fullWidth
             margin="normal"
+            value={orderPaymentAccNumber}
+            onChange={e => setOrderPaymentAccNumber(e.target.value)}
+            required
           />
           <TextField
             label="Account Name"
             placeholder="Enter Account Name"
             fullWidth
             margin="normal"
+            value={orderPaymentAccName}
+            onChange={e => setOrderPaymentAccName(e.target.value)}
+            required
           />
           <div style={{ marginTop: 16, display: "flex", justifyContent: "flex-end" }}>
             <Button
               variant="contained"
               color="primary"
               style={{ marginRight: 8 }}
-              onClick={() => {
-                // Collect values from your modal's inputs
-                const method = {
-                  name: paymentMethodName,
-                  accNumber: paymentAccNumber,
-                  accName: paymentAccName
-                };
-                handleSavePaymentMethod(method);
-              }}
+              onClick={() => setShowAddPaymentMethodModal(false)}
+              disabled={!orderPaymentMethod || !orderPaymentAccNumber || !orderPaymentAccName}
             >
               Save
             </Button>
