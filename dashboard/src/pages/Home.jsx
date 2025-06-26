@@ -36,6 +36,12 @@ function Home() {
   const [notification, setNotification] = useState({ open: false, message: "", severity: "success" });
   const [isCustomer, setIsCustomer] = useState(localStorage.getItem('userRole') === 'customer');
   const [currentUser, setCurrentUser] = useState(null);
+  const [showAddPaymentMethodModal, setShowAddPaymentMethodModal] = useState(false);
+  const [paymentMethods, setPaymentMethods] = useState(() => {
+    // Optionally load from localStorage or backend
+    const stored = localStorage.getItem('paymentMethods');
+    return stored ? JSON.parse(stored) : [];
+  });
 
   // Form validation
   const [formErrors, setFormErrors] = useState({});
@@ -166,55 +172,76 @@ function Home() {
     }
   }
 
+  // Utility to generate a unique order ID (e.g., timestamp + random)
+  function generateOrderId() {
+    return `${Date.now()}${Math.floor(Math.random() * 1000)}`;
+  }
+
   function handleChange(event) {
     const { name, value } = event.target;
-    
+
     setFormErrors(prev => ({
       ...prev,
       [name]: null
     }));
-    
+
     setFormData((prev) => {
       let updatedData = { ...prev, [name]: value };
 
       if (name === "laundryWeight") {
-        const weight = parseFloat(value);
+        // Limit to 10kg max
+        let weight = parseFloat(value);
+        if (weight > 10) weight = 10;
+        if (weight < 0) weight = 0;
+        updatedData.laundryWeight = weight.toString();
 
-        if (weight >= 1 && weight <= 5) {
-          updatedData.amountToPay = 150;
-        } else if (weight > 5 && weight <= 8) {
-          updatedData.amountToPay = 180;
-        } else if (weight > 8) {
-          updatedData.amountToPay = 230;
-        } else {
-          updatedData.amountToPay = "";
-        }
+        // Calculate amount to pay (₱30 per kg)
+        const pricePerKg = 30;
+        updatedData.amountToPay = weight ? (weight * pricePerKg).toFixed(2) : "";
       }
+
+      if (name === "date") {
+        updatedData.date = value;
+      }
+
       return updatedData;
     });
   }
 
   function validateForm() {
     const errors = {};
-    
+
     if (!formData.customerName?.trim()) {
       errors.customerName = "Customer name is required";
     }
-    
+
     if (!formData.laundryWeight) {
       errors.laundryWeight = "Laundry weight is required";
     } else if (isNaN(formData.laundryWeight) || formData.laundryWeight <= 0) {
-      errors.laundryWeight = "Enter a valid weight greater than 0";
+      errors.laundryWeight = "Laundry weight must be a positive number";
+    } else if (parseFloat(formData.laundryWeight) > 10) {
+      errors.laundryWeight = "Laundry weight cannot exceed 10kg";
     }
-    
+
     if (!formData.date?.trim()) {
       errors.date = "Date is required";
+    } else {
+      // Date validation: not in the past, not more than 1 year ahead
+      const today = new Date();
+      const selected = new Date(formData.date);
+      const maxDate = new Date();
+      maxDate.setFullYear(today.getFullYear() + 1);
+      if (selected < today.setHours(0,0,0,0)) {
+        errors.date = "Date cannot be in the past";
+      } else if (selected > maxDate) {
+        errors.date = "Date cannot be more than 1 year from today";
+      }
     }
-    
+
     if (!formData.serviceType?.trim()) {
       errors.serviceType = "Service type is required";
     }
-    
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   }
@@ -322,7 +349,7 @@ function Home() {
       "";
 
     setFormData({
-      orderId: "",
+      orderId: generateOrderId(), // Auto-generate order ID
       customerName: userName,
       laundryWeight: "",
       amountToPay: "",
@@ -336,6 +363,14 @@ function Home() {
   function handleCloseNotification() {
     setNotification(prev => ({ ...prev, open: false }));
   }
+
+  // Add payment method
+  const handleSavePaymentMethod = (method) => {
+    const updated = [...paymentMethods, method];
+    setPaymentMethods(updated);
+    localStorage.setItem('paymentMethods', JSON.stringify(updated));
+    setShowAddPaymentMethodModal(false);
+  };
 
   // Get status class for styling
   const getStatusClass = (status) => {
@@ -625,19 +660,33 @@ function Home() {
               </>
             )}
           </div>
+
+          {isCustomer && paymentMethods.length > 0 && (
+            <div className="user-payment-methods" style={{ marginBottom: 16 }}>
+              <h4>Your Payment Methods:</h4>
+              <ul>
+                {paymentMethods.map((pm, idx) => (
+                  <li key={idx}>
+                    <strong>{pm.name}</strong> - {pm.accNumber} ({pm.accName})
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
 
       <Modal open={openAdd} onClose={() => !loading && setOpenAdd(false)}>
         <Box className="home-modal-box">
           <h2>Add Order</h2>
+          {/* Order ID is now auto-generated and read-only */}
           <TextField
             name="orderId"
             label="Order Id"
             value={formData.orderId}
-            onChange={handleChange}
             fullWidth
             margin="normal"
+            disabled
           />
 
           <TextField
@@ -665,7 +714,7 @@ function Home() {
             helperText={formErrors.laundryWeight}
             required
             InputProps={{
-              inputProps: { min: 0.1, step: 0.1 }
+              inputProps: { min: 0.1, max: 10, step: 0.1 }
             }}
           />
           
@@ -720,6 +769,18 @@ function Home() {
             )}
           </FormControl>
           
+          {isCustomer && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              style={{ marginBottom: 16 }}
+              onClick={() => setShowAddPaymentMethodModal(true)}
+              fullWidth
+            >
+              Add a Payment Method
+            </Button>
+          )}
+          
           <div className="home-modal-buttons">
             <Button 
               onClick={handleAddOrder} 
@@ -733,6 +794,54 @@ function Home() {
               onClick={() => setOpenAdd(false)} 
               variant="outlined"
               disabled={loading}
+            >
+              Cancel
+            </Button>
+          </div>
+        </Box>
+      </Modal>
+
+      <Modal open={showAddPaymentMethodModal} onClose={() => setShowAddPaymentMethodModal(false)}>
+        <Box className="home-modal-box" sx={{ maxWidth: 400 }}>
+          <h3>Add Payment Method</h3>
+          <TextField
+            label="Payment Method Name"
+            placeholder="e.g. GCash, BDO, PNB"
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Account Number"
+            placeholder="Enter Account Number"
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Account Name"
+            placeholder="Enter Account Name"
+            fullWidth
+            margin="normal"
+          />
+          <div style={{ marginTop: 16, display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ marginRight: 8 }}
+              onClick={() => {
+                // Collect values from your modal's inputs
+                const method = {
+                  name: paymentMethodName,
+                  accNumber: paymentAccNumber,
+                  accName: paymentAccName
+                };
+                handleSavePaymentMethod(method);
+              }}
+            >
+              Save
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => setShowAddPaymentMethodModal(false)}
             >
               Cancel
             </Button>

@@ -35,11 +35,25 @@ function OrderStatus() {
     amount: order?.amountToPay || ""
   });
 
+  // Add payment method modal state
+  const [showAddMethodModal, setShowAddMethodModal] = useState(false);
+
   useEffect(() => {
     if (!order) {
       console.warn("No order selected.");
     }
   }, [order]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      const userId = localStorage.getItem('userId');
+      const response = await axios.get(`http://192.168.9.27:1337/orders/user/${userId}`, {
+        headers: { 'user-id': userId }
+      });
+      setOrders(response.data);
+    };
+    fetchOrders();
+  }, []);
 
   if (!order) {
     return <h2 className="no-order">No Order Selected</h2>;
@@ -196,16 +210,16 @@ function OrderStatus() {
             <div>
               <h3>TaraLaba</h3>
               <p>
-                Aglipay Street, Bayombong.
+                Mabini St, Bayombong.
                 <br />
                 Nueva Vizcaya - 3700
                 <br />
                 Bayombong, Nueva Vizcaya
               </p>
               <p>
-                hed-mwpajarillo@smu.edu.ph
+                TaraLaba2025@gmail.com
                 <br />
-                (+63) 939-737-4249
+                (+63) 987-654-3210
               </p>
             </div>
             <div>
@@ -242,6 +256,13 @@ function OrderStatus() {
             <div className="payActions">
               <button className="add" onClick={() => setShowPaymentModal(true)}>
                 Add Payment
+              </button>
+              <button
+                className="add-method"
+                style={{ marginLeft: 8 }}
+                onClick={() => setShowAddMethodModal(true)}
+              >
+                Add Payment Method
               </button>
               <button className="print" onClick={printReceipt}>Print Invoice</button>
               <button 
@@ -373,6 +394,70 @@ function OrderStatus() {
                 </div>
               </div>
             )}
+            {/* Add Payment Method Modal */}
+            {showAddMethodModal && (
+              <div className="modal-overlay">
+                <div className="modal">
+                  <h3>Add Payment Method</h3>
+                  <div style={{ marginBottom: "1rem" }}>
+                    <label>
+                      <strong>Payment Method Name:</strong>
+                      <input
+                        type="text"
+                        placeholder="e.g. GCash, BDO, PNB"
+                        style={{ marginLeft: "0.5rem" }}
+                      />
+                    </label>
+                    <div style={{ marginTop: "0.5rem" }}>
+                      <label>
+                        <strong>Account Number:</strong>
+                        <input
+                          type="text"
+                          placeholder="Enter Account Number"
+                          style={{ marginLeft: "0.5rem" }}
+                        />
+                      </label>
+                    </div>
+                    <div style={{ marginTop: "0.5rem" }}>
+                      <label>
+                        <strong>Account Name:</strong>
+                        <input
+                          type="text"
+                          placeholder="Enter Account Name"
+                          style={{ marginLeft: "0.5rem" }}
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <button
+                    style={{
+                      marginRight: "1rem",
+                      padding: "0.5rem 1rem",
+                      background: "#1976d2",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer"
+                    }}
+                    onClick={() => setShowAddMethodModal(false)}
+                  >
+                    Save
+                  </button>
+                  <button
+                    style={{
+                      padding: "0.5rem 1rem",
+                      background: "#ccc",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer"
+                    }}
+                    onClick={() => setShowAddMethodModal(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -428,4 +513,4 @@ function OrderStatus() {
     </div>
   );
 }
-export default OrderStatus; 
+export default OrderStatus;

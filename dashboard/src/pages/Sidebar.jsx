@@ -103,7 +103,9 @@ function Sidebar({ onToggle }) {
           <div className={`menu ${isActive("/home")}`}>
             <HomeIcon className="icon" />
             <Link to="/home" className="link" onClick={() => isMobile && setIsOpen(false)}>
-              <p>Home</p>
+              <p>
+                {userRole === 'admin' ? 'Laundry Management' : 'Home'}
+              </p>
             </Link>
           </div>
 
@@ -111,7 +113,7 @@ function Sidebar({ onToggle }) {
             <div className={`menu ${isActive("/reports")}`}>
               <AssessmentIcon className="icon" />
               <Link to="/reports" className="link" onClick={() => isMobile && setIsOpen(false)}>
-                <p>Reports</p>
+                <p>Manage Reports</p>
               </Link>
             </div>
           )}
@@ -125,14 +127,8 @@ function Sidebar({ onToggle }) {
             </div>
           )}
 
-          {userRole === 'customer' && (
-            <div className={`menu ${isActive("/my-orders")}`}>
-              <ReceiptIcon className="icon" />
-              <Link to="/my-orders" className="link" onClick={() => isMobile && setIsOpen(false)}>
-                <p>My Orders</p>
-              </Link>
-            </div>
-          )}
+          
+
 
           <div className={`menu ${isActive("/profile")}`}>
             <AccountCircleIcon className="icon" />
@@ -144,7 +140,7 @@ function Sidebar({ onToggle }) {
           {userRole === 'admin' && (
             <div className={`menu ${isActive("/settings")}`}>
               <SettingsIcon className="icon" />
-              <Link to="/settings" className="link" onClick={() => isMobile && setIsOpen(false)}>
+              <Link to="" className="link" onClick={() => isMobile && setIsOpen(false)}>
                 <p>Settings</p>
               </Link>
             </div>
