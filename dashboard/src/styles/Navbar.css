@@ -2,13 +2,14 @@
   position: fixed;
   top: 0;
   right: 0;
-  left: 90px; 
+  left: 250px; /* <-- Match your sidebar width */
   height: 60px;
   z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 32px;
+  background: transparent;
 }
 
 .navbar-left {
@@ -34,6 +35,22 @@
   color: #666;
 }
 
+/* New rule for MuiSvgIcon color */
+.navbar-right .MuiSvgIcon-root {
+  color: #fff !important;
+}
+
+/* Make the BlurText white */
+.landing-title {
+  color: #fff !important;
+  font-size: 2.5rem;
+  font-weight: bold;
+  line-height: 1.1;
+  margin: 0;
+  padding: 0;
+  margin-left: 100px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .navbar {
@@ -47,4 +64,4 @@
   .user-greeting {
     display: none;
   }
-} 
+}

@@ -104,7 +104,7 @@ function Sidebar({ onToggle }) {
             <HomeIcon className="icon" />
             <Link to="/home" className="link" onClick={() => isMobile && setIsOpen(false)}>
               <p>
-                {userRole === 'admin' ? 'Laundry Management' : 'Home'}
+                {userRole === 'admin' ? 'Landing Page' : 'Home'}
               </p>
             </Link>
           </div>
@@ -113,7 +113,7 @@ function Sidebar({ onToggle }) {
             <div className={`menu ${isActive("/reports")}`}>
               <AssessmentIcon className="icon" />
               <Link to="/reports" className="link" onClick={() => isMobile && setIsOpen(false)}>
-                <p>Manage Reports</p>
+                <p>Laundry Management</p>
               </Link>
             </div>
           )}

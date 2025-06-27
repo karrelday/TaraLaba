@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import NotificationIcon from './NotificationIcon';
+import Aurora from '../components/Aurora'; // <-- Import Aurora here
+import BlurText from "../components/BlurText";
 import axios from 'axios';
 import '../styles/Navbar.css';
 
@@ -60,19 +62,33 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className="navbar">
-      <div className="navbar-left">
-
+    <>
+      <Aurora
+        colorStops={["#5227FF", "#7CFF67", "#5227FF"]}
+        speed={0.2}
+        blend={0.5}
+        amplitude={1.0}
+      />
+      <div className="navbar">
+        <div className="navbar-left">
+          <BlurText
+            text="Welcome to TaraLaba!"
+            delay={200}
+            animateBy="words"
+            direction="top"
+            className="landing-title"
+          />
+        </div>
+        <div className="navbar-right">
+          {user && (
+            <div className="user-greeting">
+              Hello, {user.name || 'User'}
+            </div>
+          )}
+          <NotificationIcon notifications={notifications} />
+        </div>
       </div>
-      <div className="navbar-right">
-        {user && (
-          <div className="user-greeting">
-            Hello, {user.name || 'User'}
-          </div>
-        )}
-        <NotificationIcon notifications={notifications} />
-      </div>
-    </div>
+    </>
   );
 };
 

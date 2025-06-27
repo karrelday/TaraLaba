@@ -15,6 +15,7 @@ import Notifications from "./pages/Notifications";
 import UserManagement from "./pages/UserManagement";
 import Profile from "./pages/Profile";
 import Navbar from "./components/Navbar";
+import ManageOrders from "./pages/ManageOrders";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -43,6 +44,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/manage-users" element={<UserManagement />} />
+          <Route path="/manage-orders" element={<ManageOrders />} />
         </Routes>
       </div>
     </Router>

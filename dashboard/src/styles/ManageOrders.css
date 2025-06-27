@@ -640,9 +640,3 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     flex-wrap: wrap;
   }
 }
-
-.landing-title {
-  font-size: 3rem;
-  font-weight: bold;
-  line-height: 1.1;
-}
