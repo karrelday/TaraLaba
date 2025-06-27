@@ -127,8 +127,14 @@ function Sidebar({ onToggle }) {
             </div>
           )}
 
-          
-
+          {(userRole === 'customer' || userRole === 'admin') && (
+            <div className={`menu ${isActive("/manage-orders")}`}>
+              <ShoppingCartIcon className="icon" />
+              <Link to="/manage-orders" className="link" onClick={() => isMobile && setIsOpen(false)}>
+                <p>{userRole === 'admin' ? 'Manage Orders' : 'Add Order'}</p>
+              </Link>
+            </div>
+          )}
 
           <div className={`menu ${isActive("/profile")}`}>
             <AccountCircleIcon className="icon" />
