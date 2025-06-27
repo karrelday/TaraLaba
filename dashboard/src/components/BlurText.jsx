@@ -13,7 +13,7 @@ const buildKeyframes = (from, steps) => {
   });
   return keyframes;
 };
-
+/
 const BlurText = ({
   text = '',
   delay = 200,
