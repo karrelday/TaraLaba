@@ -63,12 +63,6 @@ const Navbar = () => {
 
   return (
     <>
-      <Aurora
-        colorStops={["#5227FF", "#7CFF67", "#5227FF"]}
-        speed={0.2}
-        blend={0.5}
-        amplitude={1.0}
-      />
       <div className="navbar">
         <div className="navbar-left">
           <BlurText

@@ -16,6 +16,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import axios from "axios";
 import { Badge } from "@mui/material";
+import Logo from "../pictures/TaraLaba.jpg";
 
 function Sidebar({ onToggle }) {
   const location = useLocation();
@@ -97,8 +98,8 @@ function Sidebar({ onToggle }) {
       )}
 
       <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
-        <h2>TaraLaba</h2>
-        
+        <img src="../src/pictures/TaraLaba.jpg" alt="TaraLaba Logo" className="logo" />
+
         <div className="menu-items">
           <div className={`menu ${isActive("/home")}`}>
             <HomeIcon className="icon" />

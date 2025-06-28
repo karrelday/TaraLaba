@@ -37,12 +37,12 @@
 
 /* New rule for MuiSvgIcon color */
 .navbar-right .MuiSvgIcon-root {
-  color: #fff !important;
+  color: #000000 !important;
 }
 
 /* Make the BlurText white */
 .landing-title {
-  color: #fff !important;
+  color: #000000 !important;
   font-size: 2.5rem;
   font-weight: bold;
   line-height: 1.1;
