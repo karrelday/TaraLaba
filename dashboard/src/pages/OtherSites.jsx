@@ -22,17 +22,17 @@ const sites = [
   {
     name: "Blended",
     img: "../src/pictures/Blended.jpg",
-    url: "http://192.168.9.7:5173/", // Update with actual URL
+    url: "http://192.168.9.7:5173/",
   },
   {
     name: "ITBytes",
     img: "../src/pictures/itbytes.jpg",
-    url: "http://192.168.9.4:5173/", // Update with actual URL
+    url: "http://192.168.9.4:5173/",
   },
   {
     name: "Dental Clinic",
     img: "../src/pictures/sml.jpg",
-    url: "http://192.168.9.35:5173/", // Update with actual URL
+    url: "http://192.168.9.35:5173/",
   },
 ];
 
