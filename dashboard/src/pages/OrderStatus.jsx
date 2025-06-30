@@ -47,7 +47,7 @@ function OrderStatus() {
   useEffect(() => {
     const fetchOrders = async () => {
       const userId = localStorage.getItem('userId');
-      const response = await axios.get(`http://192.168.9.27:1337/orders/user/${userId}`, {
+      const response = await axios.get(`http://192.168.100.12:1337/orders/user/${userId}`, {
         headers: { 'user-id': userId }
       });
       setOrders(response.data);
@@ -66,7 +66,7 @@ function OrderStatus() {
     }
     try {
       const userId = localStorage.getItem('userId');
-      const response = await axios.put(`http://192.168.9.27:1337/updateorder/${order._id}`, {
+      const response = await axios.put(`http://192.168.100.12:1337/updateorder/${order._id}`, {
         status: status
       }, {
         headers: { 
@@ -105,7 +105,7 @@ function OrderStatus() {
     const orderId = order.orderId || order.id;
     setIsDownloading(true);
     try {
-      const response = await axios.get(`http://192.168.9.27:1337/receipt/${orderId}`, {
+      const response = await axios.get(`http://192.168.100.12:1337/receipt/${orderId}`, {
         headers: { 'user-id': localStorage.getItem('userId') },
         responseType: 'blob'
       });
@@ -129,7 +129,7 @@ function OrderStatus() {
     if (!window.confirm("Are you sure you want to cancel this order?")) return;
     try {
       const userId = localStorage.getItem('userId');
-      const response = await axios.put(`http://192.168.9.27:1337/updateorder/${order._id}`, {
+      const response = await axios.put(`http://192.168.100.12:1337/updateorder/${order._id}`, {
         status: "Cancelled"
       }, {
         headers: { 
@@ -194,6 +194,25 @@ function OrderStatus() {
     setShowPaymentModal(false);
   };
 
+  const paymentSomething = async ({ fromAccountNumber, toBusinessAccount, amount, details }) => {
+    try {
+      const response = await axios.post(
+        'http://192.168.100.13:4000/api/Philippine-National-Bank/business-integration/customer/pay-business',
+        {
+          fromAccountNumber,
+          toBusinessAccount,
+          amount,
+          details
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error('Payment failed:', error.response?.data || error.message);
+      throw error;
+    }
+  };
+
   return (
     <div className="orderPage">
       <Sidebar />
@@ -255,9 +274,6 @@ function OrderStatus() {
               </p>
             </div>
             <div className="payActions">
-              <button className="add" onClick={() => setShowPaymentModal(true)}>
-                Add Payment
-              </button>
               <button
                 className="add-method"
                 style={{ marginLeft: 8 }}
@@ -400,36 +416,95 @@ function OrderStatus() {
               <div className="modal-overlay">
                 <div className="modal">
                   <h3>Add Payment Method</h3>
-                  <div style={{ marginBottom: "1rem" }}>
-                    <label>
-                      <strong>Payment Method Name:</strong>
-                      <input
-                        type="text"
-                        placeholder="e.g. GCash, BDO, PNB"
-                        style={{ marginLeft: "0.5rem" }}
-                      />
-                    </label>
-                    <div style={{ marginTop: "0.5rem" }}>
-                      <label>
-                        <strong>Account Number:</strong>
-                        <input
-                          type="text"
-                          placeholder="Enter Account Number"
-                          style={{ marginLeft: "0.5rem" }}
-                        />
-                      </label>
-                    </div>
-                    <div style={{ marginTop: "0.5rem" }}>
-                      <label>
-                        <strong>Account Name:</strong>
-                        <input
-                          type="text"
-                          placeholder="Enter Account Name"
-                          style={{ marginLeft: "0.5rem" }}
-                        />
-                      </label>
-                    </div>
+                  {/* Payment method selection buttons */}
+                  <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem" }}>
+                    <button
+                      style={{
+                        padding: "0.5rem 1rem",
+                        background: selectedPayment === "BDO" ? "#1976d2" : "#eee",
+                        color: selectedPayment === "BDO" ? "#fff" : "#333",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer"
+                      }}
+                      onClick={() => setSelectedPayment("BDO")}
+                    >
+                      BDO
+                    </button>
+                    <button
+                      style={{
+                        padding: "0.5rem 1rem",
+                        background: selectedPayment === "PNB" ? "#1976d2" : "#eee",
+                        color: selectedPayment === "PNB" ? "#fff" : "#333",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer"
+                      }}
+                      onClick={() => setSelectedPayment("PNB")}
+                    >
+                      PNB
+                    </button>
+                    <button
+                      style={{
+                        padding: "0.5rem 1rem",
+                        background: selectedPayment === "GCash" ? "#1976d2" : "#eee",
+                        color: selectedPayment === "GCash" ? "#fff" : "#333",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer"
+                      }}
+                      onClick={() => setSelectedPayment("GCash")}
+                    >
+                      GCASH
+                    </button>
                   </div>
+                  {/* Show payment fields only after a method is selected */}
+                  {selectedPayment && (
+                    <div style={{ marginBottom: "1rem" }}>
+                      <div style={{ marginTop: "0.5rem" }}>
+                        <label>
+                          <strong>fromAccountNumber:</strong>
+                          <input
+                            type="text"
+                            placeholder="Enter From Account Number"
+                            style={{ marginLeft: "0.5rem" }}
+                            value={paymentDetails.accNumber}
+                            onChange={e => setPaymentDetails(prev => ({ ...prev, accNumber: e.target.value }))}
+                          />
+                        </label>
+                      </div>
+                      <div style={{ marginTop: "0.5rem" }}>
+                        <label>
+                          <strong>toBusinessAccount:</strong>
+                          <input
+                            type="text"
+                            placeholder="Enter Business Account Number"
+                            style={{ marginLeft: "0.5rem" }}
+                            value={paymentDetails.toBusinessAccount || ""}
+                            onChange={e => setPaymentDetails(prev => ({ ...prev, toBusinessAccount: e.target.value }))}
+                          />
+                        </label>
+                      </div>
+                      <div style={{ marginTop: "0.5rem" }}>
+                        <strong>amount:</strong>
+                        <span style={{ marginLeft: "0.5rem" }}>
+                          ₱{Number(order.amountToPay || 0) + 5}
+                        </span>
+                      </div>
+                      <div style={{ marginTop: "0.5rem" }}>
+                        <label>
+                          <strong>details:</strong>
+                          <input
+                            type="text"
+                            placeholder="Enter Details"
+                            style={{ marginLeft: "0.5rem" }}
+                            value={paymentDetails.details || ""}
+                            onChange={e => setPaymentDetails(prev => ({ ...prev, details: e.target.value }))}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  )}
                   <button
                     style={{
                       marginRight: "1rem",
@@ -455,6 +530,39 @@ function OrderStatus() {
                     onClick={() => setShowAddMethodModal(false)}
                   >
                     Cancel
+                  </button>
+                  <button
+                    style={{
+                      marginLeft: "1rem",
+                      padding: "0.5rem 1rem",
+                      background: "#43a047",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer"
+                    }}
+                    disabled={
+                      !selectedPayment ||
+                      !paymentDetails.accNumber ||
+                      !paymentDetails.toBusinessAccount ||
+                      !paymentDetails.details
+                    }
+                    onClick={async () => {
+                      try {
+                        await paymentSomething({
+                          fromAccountNumber: paymentDetails.accNumber,
+                          toBusinessAccount: paymentDetails.toBusinessAccount,
+                          amount: Number(order.amountToPay || 0) + 5,
+                          details: paymentDetails.details
+                        });
+                        alert("Payment successful!");
+                        setShowAddMethodModal(false);
+                      } catch (error) {
+                        alert("Payment failed. Please try again.");
+                      }
+                    }}
+                  >
+                    Pay Now
                   </button>
                 </div>
               </div>

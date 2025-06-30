@@ -46,7 +46,7 @@ function SignUp() {
     }
     
     try {
-      const { data: users } = await axios.get("http://localhost:1337/fetchusers");
+      const { data: users } = await axios.get("http://192.168.100.12:1337/fetchusers");
       const usernameExists = users.some((user) => user.userName === formData.userName);
       const emailExists = users.some((user) => user.email === formData.email);
 
@@ -65,7 +65,7 @@ function SignUp() {
       // Ensure role is always 'customer' for public signup
       dataToSend.role = 'customer';
       
-      await axios.post("http://192.168.9.27:1337/addusers", dataToSend);
+      await axios.post("http://192.168.100.12:1337/addusers", dataToSend);
       alert("Account created successfully!");
       navigate('/login');
     } catch (error) {

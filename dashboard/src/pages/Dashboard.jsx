@@ -97,7 +97,7 @@ const Dashboard = () => {
         return;
       }
 
-      const response = await axios.put(`http://192.168.9.27:1337/updateorder/${order._id}`, {
+      const response = await axios.put(`http://192.168.100.12:1337/updateorder/${order._id}`, {
         status: newStatus
       }, {
         headers: { 

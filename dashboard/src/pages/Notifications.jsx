@@ -64,7 +64,7 @@ const Notifications = () => {
     try {
       console.log('Marking notification as read:', notificationId);
       
-      await axios.put(`http://192.168.9.27:1337/notifications/${notificationId}/read`, {}, {
+      await axios.put(`http://192.168.100.12:1337/notifications/${notificationId}/read`, {}, {
         headers: { 'user-id': userId }
       });
       

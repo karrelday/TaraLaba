@@ -24,7 +24,7 @@ function Profile() {
   const fetchUserData = async () => {
     try {
       const userId = localStorage.getItem('userId');
-      const response = await axios.get(`http://192.168.9.27:1337/fetchusers`);
+      const response = await axios.get(`http://192.168.100.12:1337/fetchusers`);
       const users = response.data;
       const currentUser = users.find(user => user._id === userId);
       

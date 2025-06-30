@@ -24,6 +24,25 @@ import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
 import Sidebar from "./Sidebar";
 
+const paymentSomething = async () => {
+  try {
+    const response = await axios.post(
+      'http://192.168.100.13:4000/api/Philippine-National-Bank/business-integration/customer/pay-business',
+      {
+        fromAccountNumber:942-3261-675-3156,
+        toBusinessAccount:329-8219-700-5792,
+        amount:  300,
+        details:"payment for laundry order"
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Payment failed:', error.response?.data || error.message);
+    throw error; 
+  }
+};
+
 function ManageOrders() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -112,7 +131,7 @@ function ManageOrders() {
       try {
         const userId = localStorage.getItem('userId');
         if (userId) {
-          const response = await axios.get(`http://192.168.9.27:1337/fetchusers/${userId}`);
+          const response = await axios.get(`http://192.168.100.12:1337/fetchusers/${userId}`);
           setCurrentUser(response.data);
         }
       } catch (error) {
@@ -127,7 +146,7 @@ function ManageOrders() {
     try {
       const userId = localStorage.getItem('userId');
       const userRole = localStorage.getItem('userRole');
-      const response = await axios.get("http://192.168.9.27:1337/fetchorder", {
+      const response = await axios.get("http://192.168.100.12:1337/fetchorder", {
         headers: { 'user-id': userId }
       });
       let ordersData = Array.isArray(response.data) ? response.data : [];
@@ -227,7 +246,7 @@ function ManageOrders() {
       };
       setLoading(true);
       const { data } = await axios.post(
-        "http://192.168.9.27:1337/addorder",
+        "http://192.168.100.12:1337/addorder",
         newOrder,
         {
           headers: {
@@ -267,7 +286,7 @@ function ManageOrders() {
     try {
       setLoading(true);
       const idToDelete = order._id || order.orderId;
-      await axios.delete(`http://192.168.9.27:1337/deleteorder/${idToDelete}`);
+      await axios.delete(`http://192.168.100.12:1337/deleteorder/${idToDelete}`);
       setOrders(prevOrders => prevOrders.filter(o => o.orderId !== order.orderId));
       setNotification({
         open: true,
@@ -353,7 +372,7 @@ function ManageOrders() {
     try {
       setLoading(true);
       const userId = localStorage.getItem('userId');
-      const response = await axios.put(`http://192.168.9.27:1337/updateorder/${order._id}`, {
+      const response = await axios.put(`http://192.168.100.12:1337/updateorder/${order._id}`, {
         status: "Cancelled"
       }, {
         headers: { 
@@ -695,18 +714,6 @@ function ManageOrders() {
             )}
           </FormControl>
           
-          {isCustomer && (
-            <Button
-              variant="outlined"
-              color="secondary"
-              style={{ marginBottom: 16 }}
-              onClick={() => setShowAddPaymentMethodModal(true)}
-              fullWidth
-            >
-              Add a Payment Method
-            </Button>
-          )}
-          
           <div className="home-modal-buttons">
             <Button 
               onClick={handleAddOrder} 
@@ -775,6 +782,35 @@ function ManageOrders() {
               onClick={() => setShowAddPaymentMethodModal(false)}
             >
               Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              style={{ marginLeft: 8 }}
+              disabled={!orderPaymentAccNumber}
+              onClick={async () => {
+                try {
+                  await paymentSomething({
+                    fromAccountNumber: "942-3261-675-3156",
+                    toBusinessAccount: "329-8219-700-5792",
+                    amount: formData.amountToPay || 300,
+                    details: `Payment for laundry order`
+                  });
+                  setNotification({
+                    open: true,
+                    message: "Payment successful!",
+                    severity: "success"
+                  });
+                } catch (error) {
+                  setNotification({
+                    open: true,
+                    message: "Payment failed. Please try again.",
+                    severity: "error"
+                  });
+                }
+              }}
+            >
+              Pay Now
             </Button>
           </div>
         </Box>

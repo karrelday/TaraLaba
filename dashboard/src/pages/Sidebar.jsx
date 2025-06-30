@@ -44,7 +44,7 @@ function Sidebar({ onToggle }) {
   useEffect(() => {
     const fetchNotificationCount = async () => {
       try {
-        const response = await axios.get('http://192.168.9.27:1337/notifications', {
+        const response = await axios.get('http://192.168.100.12:1337/notifications', {
           headers: { 'user-id': localStorage.getItem('userId') }
         });
         setUnreadNotifications(response.data.length);
