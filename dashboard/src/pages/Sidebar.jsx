@@ -148,7 +148,7 @@ function Sidebar({ onToggle }) {
           <div className={`menu ${isActive("/profile")}`}>
             <AccountCircleIcon className="icon" />
             <Link to="/profile" className="link" onClick={() => isMobile && setIsOpen(false)}>
-              <p>Profile</p>
+              <p>Profile Settings</p>
             </Link>
           </div>
 
