@@ -8,6 +8,7 @@ import card2Img from "../pictures/Promo2.jpg";
 import card3Img from "../pictures/Promo3.jpg";
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { motion } from "framer-motion";
 
 function Home() {
   return (
@@ -141,8 +142,12 @@ function Home() {
         </div>
       </div>
 
-      {/* Location Section */}
-      <div
+      {/* Animated Our Locations Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        viewport={{ once: true, amount: 0.3 }}
         style={{
           padding: "32px 24px 24px 24px",
           marginTop: "24px",
@@ -179,7 +184,7 @@ function Home() {
           style={{
             width: "5px",
             height: "100%",
-            marginLeft: "-100px",
+            marginLeft: "0px",
             marginTop: "28px",
             borderRadius: "3px",
             background: "linear-gradient(90deg, #2563eb 0%, #60a5fa 100%)",
@@ -188,19 +193,23 @@ function Home() {
             bottom: 0
           }}
         />
-      </div>
+      </motion.div>
 
-      {/* Map */}
-      <div
+      {/* Animated Map Section */}
+      <motion.div
         className="map-card-wrapper"
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
+        viewport={{ once: true, amount: 0.3 }}
         style={{
           display: "flex",
           justifyContent: "left",
           alignItems: "center",
           marginTop: "64px",
-          marginLeft: "150px",
+          marginLeft: "100px", // flush with sidebar
           marginBottom: "48px",
-          width: "35%"
+          width: "50%"
         }}
       >
         <div className="map-card" style={{ width: "100%", maxWidth: "1200px" }}>
@@ -208,7 +217,13 @@ function Home() {
             center={[16.502, 121.17]}
             zoom={12.5}
             className="leaflet-container"
-            style={{ width: "100%", height: "400px", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+            style={{
+              width: "50%",
+              height: "400px",
+              borderRadius: "12px",
+              
+              boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
+            }}
           >
             <TileLayer
               attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -234,7 +249,7 @@ function Home() {
             </Marker>
           </MapContainer>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

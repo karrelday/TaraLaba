@@ -16,6 +16,7 @@ import UserManagement from "./pages/UserManagement";
 import Profile from "./pages/Profile";
 import Navbar from "./components/Navbar";
 import ManageOrders from "./pages/ManageOrders";
+import OtherSites from "./pages/OtherSites";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -45,6 +46,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/manage-users" element={<UserManagement />} />
           <Route path="/manage-orders" element={<ManageOrders />} />
+          <Route path="/other-sites" element={<OtherSites />} />
         </Routes>
       </div>
     </Router>

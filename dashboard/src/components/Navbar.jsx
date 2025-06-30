@@ -65,13 +65,7 @@ const Navbar = () => {
     <>
       <div className="navbar">
         <div className="navbar-left">
-          <BlurText
-            text="Welcome to TaraLaba!"
-            delay={200}
-            animateBy="words"
-            direction="top"
-            className="landing-title"
-          />
+         
         </div>
         <div className="navbar-right">
           {user && (

@@ -137,6 +137,14 @@ function Sidebar({ onToggle }) {
             </div>
           )}
 
+           {(userRole === 'customer') && (
+            <div className={`menu ${isActive("/other-sites")}`}>
+              <ShoppingCartIcon className="icon" />
+              <Link to="/other-sites" className="link" onClick={() => isMobile && setIsOpen(false)}>
+                <p>Business Directory</p>
+              </Link>
+            </div>
+          )}
           <div className={`menu ${isActive("/profile")}`}>
             <AccountCircleIcon className="icon" />
             <Link to="/profile" className="link" onClick={() => isMobile && setIsOpen(false)}>

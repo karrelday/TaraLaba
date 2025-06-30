@@ -65,7 +65,7 @@ function SignUp() {
       // Ensure role is always 'customer' for public signup
       dataToSend.role = 'customer';
       
-      await axios.post("http://localhost:1337/addusers", dataToSend);
+      await axios.post("http://192.168.9.27:1337/addusers", dataToSend);
       alert("Account created successfully!");
       navigate('/login');
     } catch (error) {

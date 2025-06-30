@@ -23,7 +23,7 @@ function Login() {
   async function handleLogin(event) {
     event.preventDefault();
     try {
-     const response = await fetch("http://localhost:1337/login", {
+     const response = await fetch("http://192.168.9.27:1337/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
