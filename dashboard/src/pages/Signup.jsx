@@ -6,10 +6,10 @@ import '../styles/SignUp.css';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { v4 as uuidv4 } from 'uuid';
 
 function SignUp() {
   const [formData, setFormData] = useState({
-    userId: '',
     firstName: '',
     lastName: '',
     middleName: '',
@@ -17,7 +17,8 @@ function SignUp() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'customer' // Fixed role for public signup
+    role: 'customer',
+    approved: false  
   });
   
   const [showPassword, setShowPassword] = useState(false);
@@ -26,14 +27,14 @@ function SignUp() {
 
   function handleChange(event) {
     const { name, value } = event.target;
-    // Prevent role from being changed
-    if (name === 'role') return;
+    // Prevent role and approved from being changed by user
+    if (name === 'role' || name === 'approved' || name === 'userId') return;
     setFormData(prev => ({ ...prev, [name]: value }));
   }
 
   async function handleSignUp(event) {
     event.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords don't match!");
       return;
@@ -44,7 +45,7 @@ function SignUp() {
       alert("Please enter a valid email address!");
       return;
     }
-    
+
     try {
       const { data: users } = await axios.get("http://192.168.100.12:1337/fetchusers");
       const usernameExists = users.some((user) => user.userName === formData.userName);
@@ -59,14 +60,18 @@ function SignUp() {
         alert("Email already registered!");
         return;
       }
-      
+
+      // Generate a unique userId (you can use uuid or your own logic)
+      const generatedUserId = uuidv4();
+
       const dataToSend = { ...formData };
       delete dataToSend.confirmPassword;
-      // Ensure role is always 'customer' for public signup
       dataToSend.role = 'customer';
-      
+      dataToSend.userId = generatedUserId;
+      dataToSend.approved = false; // Mark as not approved
+
       await axios.post("http://192.168.100.12:1337/addusers", dataToSend);
-      alert("Account created successfully!");
+      alert("Account created successfully! Please wait for admin approval before logging in.");
       navigate('/login');
     } catch (error) {
       console.error("Registration error:", error);
@@ -86,16 +91,6 @@ function SignUp() {
           <h2 className='createAccount'>Create Account</h2>  
           <form onSubmit={handleSignUp} className='form'>
             <div className="name-fields">
-            <TextField
-                type="text"
-                name="userId"
-                label="User ID"
-                value={formData.userId}
-                onChange={handleChange}
-                required
-                fullWidth
-                className="signupField"
-              />
               <TextField
                 type="text"
                 name="firstName"
@@ -106,7 +101,6 @@ function SignUp() {
                 fullWidth
                 className="signupField"
               />
-              
               <TextField
                 type="text"
                 name="lastName"
@@ -118,7 +112,6 @@ function SignUp() {
                 className="signupField"
               />
             </div>
-            
             <TextField
               type="text"
               name="middleName"
@@ -128,7 +121,6 @@ function SignUp() {
               fullWidth
               className="signupField"
             />
-            
             <TextField
               type="text"
               name="userName"
@@ -139,7 +131,6 @@ function SignUp() {
               fullWidth
               className="signupField"
             />
-
             <TextField
               type="email"
               name="email"
@@ -150,7 +141,6 @@ function SignUp() {
               fullWidth
               className="signupField"
             />
-            
             <div className="password-container">
               <TextField
                 type={showPassword ? "text" : "password"}
@@ -166,7 +156,6 @@ function SignUp() {
                 {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
               </IconButton>
             </div>
-            
             <div className="password-container">
               <TextField
                 type={showConfirmPassword ? "text" : "password"}
@@ -182,12 +171,10 @@ function SignUp() {
                 {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
               </IconButton>
             </div>
-
             <Button className="create" variant="contained" type="submit" startIcon={<PersonAddIcon />} fullWidth>
               Create Account
             </Button>
           </form>
-          
           <div className="login-link">
             Already have an account? <a href='' onClick={navigateToLogin}>Sign in</a>
           </div>
