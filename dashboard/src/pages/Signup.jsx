@@ -23,6 +23,10 @@ function SignUp() {
   
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [emailForOtp, setEmailForOtp] = useState('');
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const navigate = useNavigate();
 
   function handleChange(event) {
@@ -32,8 +36,47 @@ function SignUp() {
     setFormData(prev => ({ ...prev, [name]: value }));
   }
 
+  async function handleSendOtp(event) {
+    event.preventDefault();
+    if (!formData.email) {
+      alert('Please enter your email first.');
+      return;
+    }
+    setIsVerifyingOtp(true);
+    try {
+      await axios.post('http://localhost:1337/send-signup-otp', { email: formData.email });
+      setOtpSent(true);
+      setEmailForOtp(formData.email);
+      alert('Verification code sent to your email.');
+    } catch (error) {
+      alert(error.response?.data?.message || 'Failed to send OTP.');
+    }
+    setIsVerifyingOtp(false);
+  }
+
+  async function handleVerifyOtp(event) {
+    event.preventDefault();
+    if (!otp) {
+      alert('Please enter the OTP sent to your email.');
+      return;
+    }
+    setIsVerifyingOtp(true);
+    try {
+      await axios.post('http://localhost:1337/verify-signup-otp', { email: emailForOtp, code: otp });
+      alert('OTP verified! You can now complete your registration.');
+      setOtpSent(false); // Allow registration
+    } catch (error) {
+      alert(error.response?.data?.message || 'OTP verification failed.');
+    }
+    setIsVerifyingOtp(false);
+  }
+
   async function handleSignUp(event) {
     event.preventDefault();
+    if (otpSent) {
+      alert('Please verify the OTP sent to your email before signing up.');
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords don't match!");
@@ -47,7 +90,7 @@ function SignUp() {
     }
 
     try {
-      const { data: users } = await axios.get("http://192.168.9.27:1337/fetchusers");
+      const { data: users } = await axios.get("http://localhost:1337/fetchusers");
       const usernameExists = users.some((user) => user.userName === formData.userName);
       const emailExists = users.some((user) => user.email === formData.email);
 
@@ -70,8 +113,8 @@ function SignUp() {
       dataToSend.userId = generatedUserId;
       dataToSend.approved = false; // Mark as not approved
 
-      await axios.post("http://192.168.9.27:1337/addusers", dataToSend);
-      alert("Account created successfully! Please wait for admin approval before logging in.");
+      await axios.post("http://localhost:1337/addusers", dataToSend);
+      alert("Account created successfully! You can now log in.");
       navigate('/login');
     } catch (error) {
       console.error("Registration error:", error);
@@ -89,7 +132,7 @@ function SignUp() {
         <div className='signup-box'>
           <h3 className='signUpName'>TaraLaba</h3>
           <h2 className='createAccount'>Create Account</h2>  
-          <form onSubmit={handleSignUp} className='form'>
+          <form onSubmit={otpSent ? handleVerifyOtp : handleSendOtp} className='form'>
             <div className="name-fields">
               <TextField
                 type="text"
@@ -171,10 +214,38 @@ function SignUp() {
                 {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
               </IconButton>
             </div>
-            <Button className="create" variant="contained" type="submit" startIcon={<PersonAddIcon />} fullWidth>
-              Create Account
-            </Button>
+            {!otpSent && (
+              <Button className="create" variant="contained" type="submit" startIcon={<PersonAddIcon />} fullWidth disabled={isVerifyingOtp}>
+                Send OTP
+              </Button>
+            )}
+            {otpSent && (
+              <>
+                <TextField
+                  type="text"
+                  name="otp"
+                  label="Enter OTP"
+                  value={otp}
+                  onChange={e => setOtp(e.target.value)}
+                  required
+                  fullWidth
+                  className="signupField"
+                  style={{ marginTop: 16 }}
+                />
+                <Button className="create" variant="contained" type="submit" startIcon={<PersonAddIcon />} fullWidth disabled={isVerifyingOtp}>
+                  Verify OTP
+                </Button>
+              </>
+            )}
           </form>
+          {/* Only show registration button after OTP is verified */}
+          {!otpSent && (
+            <form onSubmit={handleSignUp}>
+              <Button className="create" variant="contained" type="submit" startIcon={<PersonAddIcon />} fullWidth>
+                Create Account
+              </Button>
+            </form>
+          )}
           <div className="login-link">
             Already have an account? <a href='' onClick={navigateToLogin}>Sign in</a>
           </div>

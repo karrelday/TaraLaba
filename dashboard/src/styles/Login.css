@@ -160,7 +160,81 @@ body, html {
   text-decoration: underline;
 }
 
-/* Responsive adjustments */
+/* Forgot Password Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.forgot-modal {
+  background: linear-gradient(135deg, #1e1e2d 20%, #141423 100%);
+  padding: 2.5rem 2rem 2rem 2rem;
+  border-radius: 16px;
+  min-width: 340px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 2px 16px rgba(0,0,0,0.15);
+  border: 1px solid rgba(255,255,255,0.08);
+  position: relative;
+  color: #fff;
+  text-align: center;
+}
+.close-modal-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.close-modal-btn:hover {
+  color: #ff5252;
+}
+.forgot-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+}
+.forgot-title {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+.forgot-input .MuiInputBase-root {
+  background: rgba(22,28,36,0.95);
+  color: #fff;
+  border-radius: 6px;
+}
+.forgot-btn {
+  background: #fff !important;
+  color: #121212 !important;
+  font-weight: 500;
+  border-radius: 6px;
+  margin-top: 0.2rem;
+  text-transform: none;
+  box-shadow: none !important;
+}
+.forgot-btn:hover {
+  background: #e3e3e3 !important;
+}
+.forgot-success {
+  color: #4caf50;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+.forgot-error {
+  color: #ff5252;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+
 @media (max-width: 768px) {
   .login-container {
     flex-direction: column;
@@ -174,5 +248,12 @@ body, html {
   .login-side {
     width: 100%;
     height: 70%;
+  }
+}
+
+@media (max-width: 600px) {
+  .forgot-modal {
+    min-width: 90vw;
+    padding: 1.5rem 0.5rem 1.5rem 0.5rem;
   }
 }

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
-import { TextField, IconButton, InputAdornment, Snackbar, Alert } from "@mui/material";
+import { TextField, IconButton, InputAdornment, Snackbar, Alert, Button } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 function Login() {
@@ -31,7 +31,7 @@ function Login() {
   async function handleLogin(event) {
     event.preventDefault();
     try {
-     const response = await fetch("http://192.168.9.27:1337/login", {
+     const response = await fetch("http://192.168.100.147:1337/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +83,7 @@ function Login() {
     e.preventDefault();
     setForgotMsg("");
     try {
-      const res = await fetch("http://192.168.9.27:1337/forgot-password", {
+      const res = await fetch("http://192.168.100.147:1337/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: forgotEmail }),
@@ -104,7 +104,7 @@ function Login() {
     e.preventDefault();
     setForgotMsg("");
     try {
-      const res = await fetch("http://192.168.9.27:1337/reset-password", {
+      const res = await fetch("http://192.168.100.147:1337/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: forgotEmail, code: resetCode, newPassword }),
@@ -231,47 +231,57 @@ function Login() {
 
       {/* Forgot Password Modal */}
       {showForgot && (
-        <div className="modal-overlay" style={{
-          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-          background: "rgba(0,0,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000
-        }}>
-          <div className="modal" style={{ background: "#fff", padding: 24, borderRadius: 8, minWidth: 320 }}>
-            <button style={{ float: "right" }} onClick={() => setShowForgot(false)}>✕</button>
+        <div className="modal-overlay">
+          <div className="modal forgot-modal">
+            <button className="close-modal-btn" onClick={() => setShowForgot(false)}>✕</button>
             {forgotStep === 1 ? (
-              <form onSubmit={handleForgotPassword}>
-                <h3>Forgot Password</h3>
-                <input
+              <form onSubmit={handleForgotPassword} className="forgot-form">
+                <h3 className="forgot-title">Forgot Password</h3>
+                <TextField
                   type="email"
                   placeholder="Enter your email"
                   value={forgotEmail}
                   onChange={e => setForgotEmail(e.target.value)}
                   required
-                  style={{ width: "100%", marginBottom: 12, padding: 8 }}
+                  fullWidth
+                  className="forgot-input"
+                  InputProps={{ style: { background: 'rgba(22,28,36,0.95)', color: '#fff', borderRadius: 6 } }}
+                  InputLabelProps={{ style: { color: '#fff' } }}
                 />
-                <button type="submit" style={{ width: "100%", padding: 8 }}>Send Reset Code</button>
-                {forgotMsg && <div style={{ color: "red", marginTop: 8 }}>{forgotMsg}</div>}
+                <Button className="forgot-btn" variant="contained" type="submit" fullWidth>
+                  Send Reset Code
+                </Button>
+                {forgotMsg && <div className={forgotMsg.includes('sent') ? 'forgot-success' : 'forgot-error'}>{forgotMsg}</div>}
               </form>
             ) : (
-              <form onSubmit={handleResetPassword}>
-                <h3>Reset Password</h3>
-                <input
+              <form onSubmit={handleResetPassword} className="forgot-form">
+                <h3 className="forgot-title">Reset Password</h3>
+                <TextField
                   type="text"
                   placeholder="Enter reset code"
                   value={resetCode}
                   onChange={e => setResetCode(e.target.value)}
                   required
-                  style={{ width: "100%", marginBottom: 8, padding: 8 }}
+                  fullWidth
+                  className="forgot-input"
+                  InputProps={{ style: { background: 'rgba(22,28,36,0.95)', color: '#fff', borderRadius: 6 } }}
+                  InputLabelProps={{ style: { color: '#fff' } }}
                 />
-                <input
+                <TextField
                   type="password"
                   placeholder="Enter new password"
                   value={newPassword}
                   onChange={e => setNewPassword(e.target.value)}
                   required
-                  style={{ width: "100%", marginBottom: 12, padding: 8 }}
+                  fullWidth
+                  className="forgot-input"
+                  InputProps={{ style: { background: 'rgba(22,28,36,0.95)', color: '#fff', borderRadius: 6 } }}
+                  InputLabelProps={{ style: { color: '#fff' } }}
                 />
-                <button type="submit" style={{ width: "100%", padding: 8 }}>Update Password</button>
-                {forgotMsg && <div style={{ color: forgotMsg.includes("updated") ? "green" : "red", marginTop: 8 }}>{forgotMsg}</div>}
+                <Button className="forgot-btn" variant="contained" type="submit" fullWidth>
+                  Update Password
+                </Button>
+                {forgotMsg && <div className={forgotMsg.includes('updated') ? 'forgot-success' : 'forgot-error'}>{forgotMsg}</div>}
               </form>
             )}
           </div>

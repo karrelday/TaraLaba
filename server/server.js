@@ -173,6 +173,10 @@ app.get("/fetchusers/:userId", async (req, res) => {
 app.post("/addusers", async (req, res) => {
   try {
     console.log("Received user data:", req.body);
+    // If the user is a customer, set isConfirmed to true automatically
+    if (req.body.role === 'customer') {
+      req.body.isConfirmed = true;
+    }
     const newUser = new User(req.body);
     const savedUser = await newUser.save();
     console.log("Saved user to database:", savedUser);
