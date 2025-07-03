@@ -131,7 +131,7 @@ function ManageOrders() {
       try {
         const userId = localStorage.getItem('userId');
         if (userId) {
-          const response = await axios.get(`http://192.168.100.12:1337/fetchusers/${userId}`);
+          const response = await axios.get(`http://192.168.9.27:1337/fetchusers/${userId}`);
           setCurrentUser(response.data);
         }
       } catch (error) {
@@ -146,7 +146,7 @@ function ManageOrders() {
     try {
       const userId = localStorage.getItem('userId');
       const userRole = localStorage.getItem('userRole');
-      const response = await axios.get("http://192.168.100.12:1337/fetchorder", {
+      const response = await axios.get("http://192.168.9.27:1337/fetchorder", {
         headers: { 'user-id': userId }
       });
       let ordersData = Array.isArray(response.data) ? response.data : [];
@@ -246,7 +246,7 @@ function ManageOrders() {
       };
       setLoading(true);
       const { data } = await axios.post(
-        "http://192.168.100.12:1337/addorder",
+        "http://192.168.9.27:1337/addorder",
         newOrder,
         {
           headers: {
@@ -286,7 +286,7 @@ function ManageOrders() {
     try {
       setLoading(true);
       const idToDelete = order._id || order.orderId;
-      await axios.delete(`http://192.168.100.12:1337/deleteorder/${idToDelete}`);
+      await axios.delete(`http://192.168.9.27:1337/deleteorder/${idToDelete}`);
       setOrders(prevOrders => prevOrders.filter(o => o.orderId !== order.orderId));
       setNotification({
         open: true,
@@ -372,7 +372,7 @@ function ManageOrders() {
     try {
       setLoading(true);
       const userId = localStorage.getItem('userId');
-      const response = await axios.put(`http://192.168.100.12:1337/updateorder/${order._id}`, {
+      const response = await axios.put(`http://192.168.9.27:1337/updateorder/${order._id}`, {
         status: "Cancelled"
       }, {
         headers: { 
@@ -493,25 +493,6 @@ function ManageOrders() {
                             >
                               View
                             </button>
-                            {isCustomer ? (
-                              order.status === "Pending" && (
-                                <button
-                                  className="cancel-btn"
-                                  onClick={() => handleCancel(order)}
-                                  disabled={loading}
-                                >
-                                  Cancel
-                                </button>
-                              )
-                            ) : (
-                              <button
-                                className="delete-btn"
-                                onClick={() => handleDeleteOrder(order)}
-                                disabled={loading}
-                              >
-                                Delete
-                              </button>
-                            )}
                           </td>
                         </tr>
                       ))}

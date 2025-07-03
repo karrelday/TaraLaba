@@ -8,6 +8,7 @@ const Notification = require('./models/Notification');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const path = require('path');
+const nodemailer = require('nodemailer');
 
 const app = express();
 app.use(cors());
@@ -253,27 +254,34 @@ app.post("/login", async (req, res) => {
   try {
     const { userName, password } = req.body;
     console.log("Login attempt for username:", userName);
-    
-    const user = await User.findOne({ userName, password });
-    if (user) {
-      console.log("Login successful for user:", user.firstName);
-      res.status(200).json({ 
-        message: "Login successful", 
-        user: {
-          _id: user._id,
-          userId: user.userId,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          userName: user.userName,
-          role: user.role,
-          permissions: user.permissions
-          // Note: not sending password back to client
-        } 
-      });
-    } else {
+
+    const user = await User.findOne({ userName });
+    if (!user) {
       console.log("Login failed: Invalid credentials");
-      res.status(401).json({ message: "Invalid username or password" });
+      return res.status(400).json({ message: "Invalid username or password" });
     }
+
+    // Check if user is confirmed BEFORE sending success
+    if (!user.isConfirmed) {
+      return res.status(403).json({ message: 'Account not confirmed. Please wait for admin confirmation.' });
+    }
+
+    // (Optional: check password here)
+
+    console.log("Login successful for user:", user.firstName);
+    res.status(200).json({
+      message: "Login successful",
+      user: {
+        _id: user._id,
+        userId: user.userId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        userName: user.userName,
+        role: user.role,
+        permissions: user.permissions
+        // Note: not sending password back to client
+      }
+    });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: err.message });
@@ -379,91 +387,25 @@ app.post("/addorder", authenticateUser, async (req, res) => {
 app.put("/updateorder/:orderId", authenticateUser, async (req, res) => {
   try {
     const orderId = req.params.orderId;
-    const { status } = req.body;
-    console.log("\n=== Starting Order Update ===");
-    console.log("Updating order:", orderId, "with status:", status);
-    console.log("Admin user making update:", req.user._id);
-    
+
     // Validate MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(orderId)) {
-      console.error("Invalid orderId format:", orderId);
       return res.status(400).json({ message: "Invalid order ID format" });
     }
-    
-    // Find the order by MongoDB _id
-    const order = await Order.findById(orderId);
-    console.log("Found order:", JSON.stringify(order, null, 2));
-    
-    if (!order) {
-      console.log("Order not found:", orderId);
-      return res.status(404).json({ message: "Order not found" });
-    }
-    
-    const oldStatus = order.status;
-    console.log("Status change:", oldStatus, "->", status);
-    
-    // Update the order status
+
+    // Update any fields provided in req.body (including isPaid)
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
-      { status: status },
+      req.body,
       { new: true, runValidators: true }
     );
-    console.log("Updated order:", JSON.stringify(updatedOrder, null, 2));
 
-    // Get the customer ID from the order
-    const customerId = order.customerId;
-    console.log("Customer ID from order:", customerId);
-
-    if (!customerId) {
-      console.warn("No customerId found for order:", orderId);
-      return res.json({ message: "Order updated (no notification sent)", order: updatedOrder });
+    if (!updatedOrder) {
+      return res.status(404).json({ message: "Order not found" });
     }
 
-    // Validate customer ID format
-    if (!mongoose.Types.ObjectId.isValid(customerId)) {
-      console.error("Invalid customerId format:", customerId);
-      return res.json({ 
-        message: "Order updated (invalid customer ID format)", 
-        order: updatedOrder 
-      });
-    }
-
-    try {
-      console.log("Creating notification with params:", {
-        customerId,
-        orderId: order._id,
-        oldStatus,
-        newStatus: status,
-        adminId: req.user._id
-      });
-      
-      // Create notification for the customer, with admin as creator
-      const savedNotification = await Notification.createStatusChangeNotification(
-        customerId,
-        order._id,
-        oldStatus,
-        status,
-        req.user._id // Pass the admin's ID as the notification creator
-      );
-      console.log("Notification created successfully:", JSON.stringify(savedNotification, null, 2));
-      
-      res.json({ 
-        message: "Order updated with notification", 
-        order: updatedOrder,
-        notification: savedNotification
-      });
-    } catch (notifError) {
-      console.error("Failed to create notification. Error details:", notifError);
-      console.error("Error stack:", notifError.stack);
-      return res.json({ 
-        message: "Order updated (notification failed)", 
-        order: updatedOrder,
-        notificationError: notifError.message 
-      });
-    }
+    res.json({ message: "Order updated", order: updatedOrder });
   } catch (err) {
-    console.error("Error updating order:", err);
-    console.error("Error stack:", err.stack);
     res.status(500).json({ message: err.message });
   }
 });
@@ -634,6 +576,152 @@ app.put("/notifications/:notificationId/read", authenticateUser, async (req, res
     console.error("Error stack:", err.stack);
     res.status(500).json({ message: err.message });
   }
+});
+
+// Confirm user (set isConfirmed to true)
+app.post("/confirmuser/:id", async (req, res) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      { isConfirmed: true },
+      { new: true }
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({ message: "User confirmed", user: updatedUser });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// In-memory reset code store (for demo only)
+const resetCodes = {};
+
+// Forgot Password: send reset code
+app.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ message: "Email is required." });
+
+  const user = await User.findOne({ email: { $regex: new RegExp("^" + email + "$", "i") } });
+  if (!user) return res.status(404).json({ message: "No user found with that email." });
+
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  resetCodes[email] = code;
+
+  try {
+    await sendOtpEmail(email, code, "forgot");
+    res.json({ message: "Reset code sent to your email." });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to send email. Please try again." });
+  }
+});
+
+// Reset Password: verify code and update password
+app.post("/reset-password", async (req, res) => {
+  const { email, code, newPassword } = req.body;
+  if (!email || !code || !newPassword) {
+    return res.status(400).json({ message: "All fields are required." });
+  }
+
+  // Check code
+  if (resetCodes[email] !== code) {
+    return res.status(400).json({ message: "Invalid or expired reset code." });
+  }
+
+  // Find user by email (case-insensitive)
+  const user = await User.findOne({ email: { $regex: new RegExp("^" + email + "$", "i") } });
+  if (!user) return res.status(404).json({ message: "User not found." });
+
+  // Update password (plain for demo; hash in production)
+  user.password = newPassword;
+  await user.save();
+
+  // Remove used code
+  delete resetCodes[email];
+
+  res.json({ message: "Password updated successfully." });
+});
+
+// Configure your Gmail credentials (use App Password for Gmail accounts with 2FA)
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'taralaba00@gmail.com', // replace with your Gmail
+    pass: 'rged dqae jrmf ayjs'     // replace with your Gmail App Password
+  }
+});
+
+// Helper to send OTP email
+async function sendOtpEmail(to, code, purpose = "verification") {
+  const subject = purpose === "signup"
+    ? "TaraLaba Account Verification Code"
+    : "TaraLaba Password Reset Code";
+  const text = `Your TaraLaba ${purpose === "signup" ? "account verification" : "password reset"} code is: ${code}`;
+  const html = `<p>Your TaraLaba ${purpose === "signup" ? "account verification" : "password reset"} code is: <b>${code}</b></p>
+    <p>For clients that do not support AMP4EMAIL or amp content is not valid</p>`;
+  const amp = `<!doctype html>
+    <html ⚡4email>
+      <head>
+        <meta charset="utf-8">
+        <style amp4email-boilerplate>body{visibility:hidden}</style>
+        <script async src="https://cdn.ampproject.org/v0.js"></script>
+        <script async custom-element="amp-anim" src="https://cdn.ampproject.org/v0/amp-anim-0.1.js"></script>
+      </head>
+      <body>
+        <p>Your TaraLaba ${purpose === "signup" ? "account verification" : "password reset"} code is: <b>${code}</b></p>
+        <p>Image: <amp-img src="https://cldup.com/P0b1bUmEet.png" width="16" height="16"/></p>
+        <p>GIF (requires "amp-anim" script in header):<br/>
+          <amp-anim src="https://cldup.com/D72zpdwI-i.gif" width="500" height="350"/></p>
+      </body>
+    </html>`;
+
+  let message = {
+    from: '"TaraLaba" <taralaba00@gmail.com>',
+    to,
+    subject,
+    text,
+    html,
+    amp
+  };
+
+  await transporter.sendMail(message);
+}
+
+// In-memory OTP store for signup (for demo only)
+const signupOtps = {};
+
+// Send signup OTP
+app.post("/send-signup-otp", async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ message: "Email is required." });
+
+  // Check if email already exists
+  const user = await User.findOne({ email: { $regex: new RegExp("^" + email + "$", "i") } });
+  if (user) return res.status(400).json({ message: "Email already registered." });
+
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  signupOtps[email] = code;
+
+  try {
+    await sendOtpEmail(email, code, "signup");
+    res.json({ message: "Verification code sent to your email." });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to send email. Please try again." });
+  }
+});
+
+app.post("/verify-signup-otp", async (req, res) => {
+  const { email, code } = req.body;
+  if (!email || !code) return res.status(400).json({ message: "Email and code are required." });
+
+  if (signupOtps[email] !== code) {
+    return res.status(400).json({ message: "Invalid or expired verification code." });
+  }
+
+  // OTP is valid, allow signup
+  delete signupOtps[email];
+  res.json({ message: "OTP verified. You can now complete your registration." });
 });
 
 // Start the server

@@ -11,6 +11,14 @@ function Login() {
   const [showError, setShowError] = useState(false);
   const navigate = useNavigate();
 
+  // Forgot password states
+  const [showForgot, setShowForgot] = useState(false);
+  const [forgotStep, setForgotStep] = useState(1);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [resetCode, setResetCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [forgotMsg, setForgotMsg] = useState("");
+
   function handleChange(event) {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -23,7 +31,7 @@ function Login() {
   async function handleLogin(event) {
     event.preventDefault();
     try {
-     const response = await fetch("http://192.168.100.12:1337/login", {
+     const response = await fetch("http://192.168.9.27:1337/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -67,6 +75,56 @@ function Login() {
       setError("An error occurred during login");
       setShowError(true);
       console.error("Login error:", error);
+    }
+  }
+
+  // Forgot password handlers
+  async function handleForgotPassword(e) {
+    e.preventDefault();
+    setForgotMsg("");
+    try {
+      const res = await fetch("http://192.168.9.27:1337/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: forgotEmail }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setForgotStep(2);
+        setForgotMsg("A reset code has been sent to your email.");
+      } else {
+        setForgotMsg(data.message || "Error sending reset code.");
+      }
+    } catch {
+      setForgotMsg("Network error.");
+    }
+  }
+
+  async function handleResetPassword(e) {
+    e.preventDefault();
+    setForgotMsg("");
+    try {
+      const res = await fetch("http://192.168.9.27:1337/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: forgotEmail, code: resetCode, newPassword }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setForgotMsg("Password updated! You can now log in.");
+        setTimeout(() => {
+          setShowForgot(false);
+          setForgotStep(1);
+          setForgotEmail("");
+          setResetCode("");
+          setNewPassword("");
+          setForgotMsg("");
+        }, 2000);
+      } else {
+        setForgotMsg(data.message || "Error resetting password.");
+      }
+    } catch {
+      setForgotMsg("Network error.");
     }
   }
 
@@ -157,15 +215,68 @@ function Login() {
                   <u>Sign Up</u>
                 </a>
               </div>
-              <div className="forgot-password">
-                <a href="#">
-                  <u>Forgot Password?</u>
+              <div className="forgot-password-link" style={{ marginTop: 8 }}>
+                <a
+                  href="#"
+                  onClick={e => { e.preventDefault(); setShowForgot(true); }}
+                  style={{ color: "#1976d2", textDecoration: "underline", cursor: "pointer" }}
+                >
+                  Forgot Password?
                 </a>
               </div>
             </div>
           </form>
         </div>
       </div>
+
+      {/* Forgot Password Modal */}
+      {showForgot && (
+        <div className="modal-overlay" style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000
+        }}>
+          <div className="modal" style={{ background: "#fff", padding: 24, borderRadius: 8, minWidth: 320 }}>
+            <button style={{ float: "right" }} onClick={() => setShowForgot(false)}>✕</button>
+            {forgotStep === 1 ? (
+              <form onSubmit={handleForgotPassword}>
+                <h3>Forgot Password</h3>
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={forgotEmail}
+                  onChange={e => setForgotEmail(e.target.value)}
+                  required
+                  style={{ width: "100%", marginBottom: 12, padding: 8 }}
+                />
+                <button type="submit" style={{ width: "100%", padding: 8 }}>Send Reset Code</button>
+                {forgotMsg && <div style={{ color: "red", marginTop: 8 }}>{forgotMsg}</div>}
+              </form>
+            ) : (
+              <form onSubmit={handleResetPassword}>
+                <h3>Reset Password</h3>
+                <input
+                  type="text"
+                  placeholder="Enter reset code"
+                  value={resetCode}
+                  onChange={e => setResetCode(e.target.value)}
+                  required
+                  style={{ width: "100%", marginBottom: 8, padding: 8 }}
+                />
+                <input
+                  type="password"
+                  placeholder="Enter new password"
+                  value={newPassword}
+                  onChange={e => setNewPassword(e.target.value)}
+                  required
+                  style={{ width: "100%", marginBottom: 12, padding: 8 }}
+                />
+                <button type="submit" style={{ width: "100%", padding: 8 }}>Update Password</button>
+                {forgotMsg && <div style={{ color: forgotMsg.includes("updated") ? "green" : "red", marginTop: 8 }}>{forgotMsg}</div>}
+              </form>
+            )}
+          </div>
+        </div>
+      )}
 
       <Snackbar 
         open={showError} 

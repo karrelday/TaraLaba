@@ -12,7 +12,6 @@ function OrderStatus() {
   const location = useLocation();
   const navigate = useNavigate();
   const [isDownloading, setIsDownloading] = useState(false);
-
   const [order, setOrder] = useState(() => {
     return (
       location.state?.order ||
@@ -20,6 +19,7 @@ function OrderStatus() {
       null
     );
   });
+  const [isPaid, setIsPaid] = useState(order?.isPaid || false);
 
   const [status, setStatus] = useState(order?.status || "Pending");
   const [userRole, setUserRole] = useState(localStorage.getItem('userRole'));
@@ -47,7 +47,7 @@ function OrderStatus() {
   useEffect(() => {
     const fetchOrders = async () => {
       const userId = localStorage.getItem('userId');
-      const response = await axios.get(`http://192.168.100.12:1337/orders/user/${userId}`, {
+      const response = await axios.get(`http://192.168.9.27:1337/orders/user/${userId}`, {
         headers: { 'user-id': userId }
       });
       setOrders(response.data);
@@ -66,7 +66,7 @@ function OrderStatus() {
     }
     try {
       const userId = localStorage.getItem('userId');
-      const response = await axios.put(`http://192.168.100.12:1337/updateorder/${order._id}`, {
+      const response = await axios.put(`http://192.168.9.27:1337/updateorder/${order._id}`, {
         status: status
       }, {
         headers: { 
@@ -105,7 +105,7 @@ function OrderStatus() {
     const orderId = order.orderId || order.id;
     setIsDownloading(true);
     try {
-      const response = await axios.get(`http://192.168.100.12:1337/receipt/${orderId}`, {
+      const response = await axios.get(`http://192.168.9.27:1337/receipt/${orderId}`, {
         headers: { 'user-id': localStorage.getItem('userId') },
         responseType: 'blob'
       });
@@ -129,7 +129,7 @@ function OrderStatus() {
     if (!window.confirm("Are you sure you want to cancel this order?")) return;
     try {
       const userId = localStorage.getItem('userId');
-      const response = await axios.put(`http://192.168.100.12:1337/updateorder/${order._id}`, {
+      const response = await axios.put(`http://192.168.9.27:1337/updateorder/${order._id}`, {
         status: "Cancelled"
       }, {
         headers: { 
@@ -197,9 +197,9 @@ function OrderStatus() {
   const paymentSomething = async ({ fromAccountNumber, toBusinessAccount, amount, details }) => {
     try {
       const response = await axios.post(
-        'http://192.168.100.13:4000/api/Philippine-National-Bank/business-integration/customer/pay-business',
+        'http://192.168.9.23:4000/api/Philippine-National-Bank/business-integration/customer/pay-business',
         {
-          fromAccountNumber,
+          customerAccountNumber: fromAccountNumber,
           toBusinessAccount,
           amount,
           details
@@ -278,6 +278,7 @@ function OrderStatus() {
                 className="add-method"
                 style={{ marginLeft: 8 }}
                 onClick={() => setShowAddMethodModal(true)}
+                disabled={isPaid} // <-- Disable when paid
               >
                 Add Payment Method
               </button>
@@ -421,13 +422,13 @@ function OrderStatus() {
                     <button
                       style={{
                         padding: "0.5rem 1rem",
-                        background: selectedPayment === "BDO" ? "#1976d2" : "#eee",
-                        color: selectedPayment === "BDO" ? "#fff" : "#333",
+                        background: "#eee",
+                        color: "#333",
                         border: "none",
                         borderRadius: "4px",
-                        cursor: "pointer"
+                        cursor: "not-allowed"
                       }}
-                      onClick={() => setSelectedPayment("BDO")}
+                      disabled
                     >
                       BDO
                     </button>
@@ -447,13 +448,13 @@ function OrderStatus() {
                     <button
                       style={{
                         padding: "0.5rem 1rem",
-                        background: selectedPayment === "GCash" ? "#1976d2" : "#eee",
-                        color: selectedPayment === "GCash" ? "#fff" : "#333",
+                        background: "#eee",
+                        color: "#333",
                         border: "none",
                         borderRadius: "4px",
-                        cursor: "pointer"
+                        cursor: "not-allowed"
                       }}
-                      onClick={() => setSelectedPayment("GCash")}
+                      disabled
                     >
                       GCASH
                     </button>
@@ -542,6 +543,7 @@ function OrderStatus() {
                       cursor: "pointer"
                     }}
                     disabled={
+                      isPaid ||
                       !selectedPayment ||
                       !paymentDetails.accNumber ||
                       !paymentDetails.toBusinessAccount ||
@@ -556,6 +558,7 @@ function OrderStatus() {
                           details: paymentDetails.details
                         });
                         alert("Payment successful!");
+                        setIsPaid(true); // <-- Add this line
                         setShowAddMethodModal(false);
                       } catch (error) {
                         alert("Payment failed. Please try again.");

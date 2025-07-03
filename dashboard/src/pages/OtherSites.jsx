@@ -31,7 +31,7 @@ const sites = [
   },
   {
     name: "Dental Clinic",
-    img: "../src/pictures/sml.jpg",
+    img: "../src/pictures/Dental.jpg",
     url: "http://192.168.9.35:5173/",
   },
 ];

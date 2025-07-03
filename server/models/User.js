@@ -43,7 +43,8 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  lastLogin: Date
+  lastLogin: Date,
+  isConfirmed: { type: Boolean, default: false }
 });
 
 userSchema.methods.hasPermission = function(permission) {

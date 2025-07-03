@@ -53,7 +53,7 @@ function UserManagement() {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://192.168.100.12:1337/fetchusers', {
+      const response = await axios.get('http://192.168.9.27:1337/fetchusers', {
         headers: { 'user-id': localStorage.getItem('userId') }
       });
       setUsers(response.data);
@@ -108,12 +108,12 @@ function UserManagement() {
     event.preventDefault();
     try {
       if (editingUser) {
-        await axios.put(`http://192.168.100.12:1337/updateuser/${editingUser._id}`, formData, {
+        await axios.put(`http://192.168.9.27:1337/updateuser/${editingUser._id}`, formData, {
           headers: { 'user-id': localStorage.getItem('userId') }
         });
         showNotification('User updated successfully');
       } else {
-        await axios.post('http://192.168.100.12:1337/addusers', formData, {
+        await axios.post('http://192.168.9.27:1337/addusers', formData, {
           headers: { 'user-id': localStorage.getItem('userId') }
         });
         showNotification('User created successfully');
@@ -129,13 +129,25 @@ function UserManagement() {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
 
     try {
-      await axios.delete(`http://192.168.100.12:1337/deleteuser/${userId}`, {
+      await axios.delete(`http://192.168.9.27:1337/deleteuser/${userId}`, {
         headers: { 'user-id': localStorage.getItem('userId') }
       });
       showNotification('User deleted successfully');
       fetchUsers();
     } catch (error) {
       showNotification('Error deleting user', 'error');
+    }
+  };
+
+  const handleConfirmUser = async (userId) => {
+    try {
+      await axios.post(`http://192.168.9.27:1337/confirmuser/${userId}`, {}, {
+        headers: { 'user-id': localStorage.getItem('userId') }
+      });
+      showNotification('User confirmed successfully');
+      fetchUsers();
+    } catch (error) {
+      showNotification('Error confirming user', 'error');
     }
   };
 
@@ -210,17 +222,27 @@ function UserManagement() {
                           <IconButton
                             className="edit-btn"
                             onClick={() => handleOpenDialog(user)}
-                            disabled={user.role === 'admin'}
                           >
                             <EditIcon />
                           </IconButton>
                           <IconButton
                             className="delete-btn"
                             onClick={() => handleDeleteUser(user._id)}
-                            disabled={user.role === 'admin'}
+                            // Optionally prevent self-delete:
+                            // disabled={user._id === localStorage.getItem('userId')}
                           >
                             <DeleteIcon />
                           </IconButton>
+                          <Button
+                            variant="contained"
+                            color="success"
+                            size="small"
+                            style={{ marginLeft: 8 }}
+                            disabled={user.isConfirmed}
+                            onClick={() => handleConfirmUser(user._id)}
+                          >
+                            Confirm
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -352,4 +374,4 @@ function UserManagement() {
   );
 }
 
-export default UserManagement; 
+export default UserManagement;

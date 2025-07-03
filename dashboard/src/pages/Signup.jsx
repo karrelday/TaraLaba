@@ -47,7 +47,7 @@ function SignUp() {
     }
 
     try {
-      const { data: users } = await axios.get("http://192.168.100.12:1337/fetchusers");
+      const { data: users } = await axios.get("http://192.168.9.27:1337/fetchusers");
       const usernameExists = users.some((user) => user.userName === formData.userName);
       const emailExists = users.some((user) => user.email === formData.email);
 
@@ -70,7 +70,7 @@ function SignUp() {
       dataToSend.userId = generatedUserId;
       dataToSend.approved = false; // Mark as not approved
 
-      await axios.post("http://192.168.100.12:1337/addusers", dataToSend);
+      await axios.post("http://192.168.9.27:1337/addusers", dataToSend);
       alert("Account created successfully! Please wait for admin approval before logging in.");
       navigate('/login');
     } catch (error) {
