@@ -102,13 +102,22 @@ function OrderStatus() {
   };
 
   const downloadReceipt = async () => {
-    const orderId = order.orderId || order.id;
+    // Prefer _id for MongoDB, fallback to orderId or id
+    const orderId = order._id || order.orderId || order.id;
     setIsDownloading(true);
     try {
-      const response = await axios.get(`http://192.168.9.27:1337/receipt/${orderId}`, {
-        headers: { 'user-id': localStorage.getItem('userId') },
-        responseType: 'blob'
-      });
+      const response = await axios.get(
+        `http://192.168.9.27:1337/receipt/${orderId}`,
+        {
+          headers: { 'user-id': localStorage.getItem('userId') },
+          responseType: 'blob'
+        }
+      );
+      // Check for PDF content type
+      const contentType = response.headers['content-type'];
+      if (!contentType || !contentType.includes('pdf')) {
+        throw new Error('Receipt not available or not a PDF.');
+      }
       const blob = new Blob([response.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -272,28 +281,36 @@ function OrderStatus() {
                   </>
                 )}
               </p>
+              {order.isPaid && (
+                <div
+                  style={{
+                    marginTop: "12px",
+                    padding: "6px 20px",
+                    background: "#43a047",
+                    color: "#fff",
+                    borderRadius: "20px",
+                    display: "inline-block",
+                    fontWeight: "bold",
+                    fontSize: "1.1em",
+                    letterSpacing: "2px"
+                  }}
+                >
+                  PAID
+                </div>
+              )}
             </div>
             <div className="payActions">
-              <button
-                className="add-method"
-                style={{ marginLeft: 8 }}
-                onClick={() => setShowAddMethodModal(true)}
-                disabled={isPaid} // <-- Disable when paid
-              >
-                Add Payment Method
-              </button>
+              {isCustomer && (
+                <button
+                  className="add-method"
+                  style={{ marginLeft: 8 }}
+                  onClick={() => setShowAddMethodModal(true)}
+                  disabled={isPaid}
+                >
+                  Add Payment Method
+                </button>
+              )}
               <button className="print" onClick={printReceipt}>Print Invoice</button>
-              <button 
-                className="download" 
-                onClick={downloadReceipt}
-                disabled={isDownloading}
-              >
-                {isDownloading ? (
-                  <CircularProgress size={20} color="inherit" />
-                ) : (
-                  'Download Receipt'
-                )}
-              </button>
               {isCustomer ? (
                 order.status === "Pending" && (
                   <button className="cancel" onClick={handleCancel}>
@@ -414,11 +431,40 @@ function OrderStatus() {
             )}
             {/* Add Payment Method Modal */}
             {showAddMethodModal && (
-              <div className="modal-overlay">
-                <div className="modal">
-                  <h3>Add Payment Method</h3>
+              <div
+                className="modal-overlay"
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100vw",
+                  height: "100vh",
+                  background: "rgba(0,0,0,0.35)",
+                  zIndex: 1000,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <div
+                  className="modal"
+                  style={{
+                    background: "#fff",
+                    borderRadius: "16px",
+                    boxShadow: "0 8px 32px rgba(0,0,0,0.18)",
+                    padding: "2.5rem 2rem",
+                    minWidth: 350,
+                    maxWidth: 400,
+                    width: "100%",
+                    margin: "0 auto",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center"
+                  }}
+                >
+                  <h3 style={{ marginBottom: "1.5rem" }}>Add Payment Method</h3>
                   {/* Payment method selection buttons */}
-                  <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem" }}>
+                  <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem", justifyContent: "center" }}>
                     <button
                       style={{
                         padding: "0.5rem 1rem",
@@ -426,7 +472,8 @@ function OrderStatus() {
                         color: "#333",
                         border: "none",
                         borderRadius: "4px",
-                        cursor: "not-allowed"
+                        cursor: "not-allowed",
+                        opacity: 0.6
                       }}
                       disabled
                     >
@@ -439,7 +486,8 @@ function OrderStatus() {
                         color: selectedPayment === "PNB" ? "#fff" : "#333",
                         border: "none",
                         borderRadius: "4px",
-                        cursor: "pointer"
+                        cursor: "pointer",
+                        fontWeight: "bold"
                       }}
                       onClick={() => setSelectedPayment("PNB")}
                     >
@@ -452,7 +500,8 @@ function OrderStatus() {
                         color: "#333",
                         border: "none",
                         borderRadius: "4px",
-                        cursor: "not-allowed"
+                        cursor: "not-allowed",
+                        opacity: 0.6
                       }}
                       disabled
                     >
@@ -461,14 +510,14 @@ function OrderStatus() {
                   </div>
                   {/* Show payment fields only after a method is selected */}
                   {selectedPayment && (
-                    <div style={{ marginBottom: "1rem" }}>
+                    <div style={{ marginBottom: "1rem", width: "100%" }}>
                       <div style={{ marginTop: "0.5rem" }}>
                         <label>
                           <strong>fromAccountNumber:</strong>
                           <input
                             type="text"
                             placeholder="Enter From Account Number"
-                            style={{ marginLeft: "0.5rem" }}
+                            style={{ marginLeft: "0.5rem", width: "70%" }}
                             value={paymentDetails.accNumber}
                             onChange={e => setPaymentDetails(prev => ({ ...prev, accNumber: e.target.value }))}
                           />
@@ -480,7 +529,7 @@ function OrderStatus() {
                           <input
                             type="text"
                             placeholder="Enter Business Account Number"
-                            style={{ marginLeft: "0.5rem" }}
+                            style={{ marginLeft: "0.5rem", width: "70%" }}
                             value={paymentDetails.toBusinessAccount || ""}
                             onChange={e => setPaymentDetails(prev => ({ ...prev, toBusinessAccount: e.target.value }))}
                           />
@@ -498,7 +547,7 @@ function OrderStatus() {
                           <input
                             type="text"
                             placeholder="Enter Details"
-                            style={{ marginLeft: "0.5rem" }}
+                            style={{ marginLeft: "0.5rem", width: "70%" }}
                             value={paymentDetails.details || ""}
                             onChange={e => setPaymentDetails(prev => ({ ...prev, details: e.target.value }))}
                           />
@@ -506,67 +555,94 @@ function OrderStatus() {
                       </div>
                     </div>
                   )}
-                  <button
-                    style={{
-                      marginRight: "1rem",
-                      padding: "0.5rem 1rem",
-                      background: "#1976d2",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer"
-                    }}
-                    onClick={() => setShowAddMethodModal(false)}
-                  >
-                    Save
-                  </button>
-                  <button
-                    style={{
-                      padding: "0.5rem 1rem",
-                      background: "#ccc",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer"
-                    }}
-                    onClick={() => setShowAddMethodModal(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    style={{
-                      marginLeft: "1rem",
-                      padding: "0.5rem 1rem",
-                      background: "#43a047",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer"
-                    }}
-                    disabled={
-                      isPaid ||
-                      !selectedPayment ||
-                      !paymentDetails.accNumber ||
-                      !paymentDetails.toBusinessAccount ||
-                      !paymentDetails.details
-                    }
-                    onClick={async () => {
-                      try {
-                        await paymentSomething({
-                          fromAccountNumber: paymentDetails.accNumber,
-                          toBusinessAccount: paymentDetails.toBusinessAccount,
-                          amount: Number(order.amountToPay || 0) + 5,
-                          details: paymentDetails.details
-                        });
-                        alert("Payment successful!");
-                        setIsPaid(true); // <-- Add this line
-                        setShowAddMethodModal(false);
-                      } catch (error) {
-                        alert("Payment failed. Please try again.");
+                  <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+                    <button
+                      style={{
+                        marginRight: "1rem",
+                        padding: "0.5rem 1rem",
+                        background: "#1976d2",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer"
+                      }}
+                      onClick={() => setShowAddMethodModal(false)}
+                    >
+                      Save
+                    </button>
+                    <button
+                      style={{
+                        padding: "0.5rem 1rem",
+                        background: "#ccc",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer"
+                      }}
+                      onClick={() => setShowAddMethodModal(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      style={{
+                        marginLeft: "1rem",
+                        padding: "0.5rem 1rem",
+                        background: "#43a047",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer"
+                      }}
+                      disabled={
+                        isPaid ||
+                        !selectedPayment ||
+                        !paymentDetails.accNumber ||
+                        !paymentDetails.toBusinessAccount ||
+                        !paymentDetails.details
                       }
-                    }}
-                  >
-                    Pay Now
-                  </button>
+                      onClick={async () => {
+                        try {
+                          // 1. Call payment API (simulate or real)
+                          await paymentSomething({
+                            fromAccountNumber: paymentDetails.accNumber,
+                            toBusinessAccount: paymentDetails.toBusinessAccount,
+                            amount: Number(order.amountToPay || 0) + 5,
+                            details: paymentDetails.details
+                          });
+
+                          // 2. Update order as paid in the backend
+                          await axios.put(
+                            `http://192.168.9.27:1337/updateorder/${order._id}`,
+                            {
+                              isPaid: true,
+                              paymentMethod: selectedPayment,
+                              paymentAccNumber: paymentDetails.accNumber,
+                              paymentAccName: paymentDetails.accName,
+                              paymentAmount: Number(order.amountToPay || 0) + 5
+                            },
+                            {
+                              headers: { 'user-id': localStorage.getItem('userId') }
+                            }
+                          );
+
+                          alert("Payment successful!");
+                          setIsPaid(true);
+                          setOrder(prev => ({
+                            ...prev,
+                            isPaid: true,
+                            paymentMethod: selectedPayment,
+                            paymentAccNumber: paymentDetails.accNumber,
+                            paymentAccName: paymentDetails.accName,
+                            paymentAmount: Number(order.amountToPay || 0) + 5
+                          }));
+                          setShowAddMethodModal(false);
+                        } catch (error) {
+                          alert("Payment failed. Please try again.");
+                        }
+                      }}
+                    >
+                      Pay Now
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

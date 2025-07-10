@@ -455,18 +455,28 @@ app.get("/receipt/:orderId", authenticateUser, async (req, res) => {
       return res.status(403).json({ message: "Access denied" });
     }
 
+    // Fallbacks for missing fields
+    const items = order.items && order.items.length > 0
+      ? order.items
+      : [{
+          service: order.serviceType || "Laundry Service",
+          quantity: order.laundryWeight || 1,
+          pricePerUnit: order.amountToPay || order.totalAmount || 0
+        }];
+    const totalAmount = order.amountToPay || order.totalAmount || 0;
+
     // Create receipt record
     const receipt = new Receipt({
       receiptId: `RCP-${Date.now()}`,
       orderId: order._id,
       userId: order.customerId,
-      items: order.items,
-      totalAmount: order.totalAmount,
-      tax: order.totalAmount * 0.1, // 10% tax
+      items,
+      totalAmount,
+      tax: totalAmount * 0.1, // 10% tax
       discount: 0,
-      finalAmount: order.totalAmount * 1.1,
-      paymentMethod: "Card",
-      paymentStatus: "completed"
+      finalAmount: totalAmount * 1.1,
+      paymentMethod: order.paymentMethod || "N/A",
+      paymentStatus: order.isPaid ? "completed" : "pending"
     });
     await receipt.save();
 
@@ -474,11 +484,11 @@ app.get("/receipt/:orderId", authenticateUser, async (req, res) => {
     const doc = new PDFDocument();
     const filename = `receipt-${receipt.receiptId}.pdf`;
     const filePath = path.join(uploadsDir, filename);
-    
+
     doc.pipe(fs.createWriteStream(filePath));
 
     // Add content to PDF
-    doc.fontSize(20).text('LaundroTrack Receipt', { align: 'center' });
+    doc.fontSize(20).text('TaraLaba Receipt', { align: 'center' });
     doc.moveDown();
     doc.fontSize(12).text(`Receipt ID: ${receipt.receiptId}`);
     doc.text(`Order ID: ${order._id}`);
@@ -486,16 +496,18 @@ app.get("/receipt/:orderId", authenticateUser, async (req, res) => {
     doc.moveDown();
     doc.text('Items:');
     receipt.items.forEach(item => {
-      doc.text(`${item.service} - Quantity: ${item.quantity} - $${item.pricePerUnit} each`);
+      doc.text(`${item.service} - Quantity: ${item.quantity} - ₱${item.pricePerUnit} each`);
     });
     doc.moveDown();
-    doc.text(`Subtotal: $${receipt.totalAmount.toFixed(2)}`);
-    doc.text(`Tax (10%): $${receipt.tax.toFixed(2)}`);
-    doc.text(`Total: $${receipt.finalAmount.toFixed(2)}`);
-    
+    doc.text(`Subtotal: ₱${receipt.totalAmount.toFixed(2)}`);
+    doc.text(`Tax (10%): ₱${receipt.tax.toFixed(2)}`);
+    doc.text(`Total: ₱${receipt.finalAmount.toFixed(2)}`);
+
     doc.end();
 
     // Send file to client
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=receipt-${order._id}.pdf`);
     res.download(filePath, filename, (err) => {
       if (err) {
         console.error("Error sending file:", err);

@@ -20,7 +20,12 @@ const orderSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  dateCompleted: Date
+  dateCompleted: Date,
+  isPaid: { type: Boolean, default: false },
+  paymentMethod: { type: String },
+  paymentAccNumber: { type: String },
+  paymentAccName: { type: String },
+  paymentAmount: { type: Number }
 });
 
 module.exports = mongoose.model('Order', orderSchema);

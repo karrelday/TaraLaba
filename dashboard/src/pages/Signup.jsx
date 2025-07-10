@@ -44,7 +44,7 @@ function SignUp() {
     }
     setIsVerifyingOtp(true);
     try {
-      await axios.post('http://localhost:1337/send-signup-otp', { email: formData.email });
+      await axios.post('http://192.168.9.27:1337/send-signup-otp', { email: formData.email });
       setOtpSent(true);
       setEmailForOtp(formData.email);
       alert('Verification code sent to your email.');
@@ -62,7 +62,7 @@ function SignUp() {
     }
     setIsVerifyingOtp(true);
     try {
-      await axios.post('http://localhost:1337/verify-signup-otp', { email: emailForOtp, code: otp });
+      await axios.post('http://192.168.9.27:1337/verify-signup-otp', { email: emailForOtp, code: otp });
       alert('OTP verified! You can now complete your registration.');
       setOtpSent(false); // Allow registration
     } catch (error) {
@@ -90,7 +90,7 @@ function SignUp() {
     }
 
     try {
-      const { data: users } = await axios.get("http://localhost:1337/fetchusers");
+      const { data: users } = await axios.get("http://192.168.9.27:1337/fetchusers");
       const usernameExists = users.some((user) => user.userName === formData.userName);
       const emailExists = users.some((user) => user.email === formData.email);
 
@@ -113,7 +113,7 @@ function SignUp() {
       dataToSend.userId = generatedUserId;
       dataToSend.approved = false; // Mark as not approved
 
-      await axios.post("http://localhost:1337/addusers", dataToSend);
+      await axios.post("http://192.168.9.27:1337/addusers", dataToSend);
       alert("Account created successfully! You can now log in.");
       navigate('/login');
     } catch (error) {

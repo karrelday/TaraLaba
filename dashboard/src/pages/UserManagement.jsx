@@ -233,16 +233,7 @@ function UserManagement() {
                           >
                             <DeleteIcon />
                           </IconButton>
-                          <Button
-                            variant="contained"
-                            color="success"
-                            size="small"
-                            style={{ marginLeft: 8 }}
-                            disabled={user.isConfirmed}
-                            onClick={() => handleConfirmUser(user._id)}
-                          >
-                            Confirm
-                          </Button>
+                          {/* Confirm button removed */}
                         </div>
                       </td>
                     </tr>
