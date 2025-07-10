@@ -513,7 +513,7 @@ function OrderStatus() {
                     <div style={{ marginBottom: "1rem", width: "100%" }}>
                       <div style={{ marginTop: "0.5rem" }}>
                         <label>
-                          <strong>fromAccountNumber:</strong>
+                          <strong>Customer Account Number:</strong>
                           <input
                             type="text"
                             placeholder="Enter From Account Number"
@@ -523,17 +523,14 @@ function OrderStatus() {
                           />
                         </label>
                       </div>
-                      <div style={{ marginTop: "0.5rem" }}>
-                        <label>
-                          <strong>toBusinessAccount:</strong>
-                          <input
-                            type="text"
-                            placeholder="Enter Business Account Number"
-                            style={{ marginLeft: "0.5rem", width: "70%" }}
-                            value={paymentDetails.toBusinessAccount || ""}
-                            onChange={e => setPaymentDetails(prev => ({ ...prev, toBusinessAccount: e.target.value }))}
-                          />
-                        </label>
+                      {/* To Account Number and Name are now hidden */}
+                      <div style={{ display: "none" }}>
+                        <strong>To Account Number:</strong>
+                        <span style={{ marginLeft: "0.5rem" }}>570-8705-845-8958</span>
+                      </div>
+                      <div style={{ display: "none" }}>
+                        <strong>To Account Name:</strong>
+                        <span style={{ marginLeft: "0.5rem" }}>TaraLaba</span>
                       </div>
                       <div style={{ marginTop: "0.5rem" }}>
                         <strong>amount:</strong>
@@ -596,7 +593,6 @@ function OrderStatus() {
                         isPaid ||
                         !selectedPayment ||
                         !paymentDetails.accNumber ||
-                        !paymentDetails.toBusinessAccount ||
                         !paymentDetails.details
                       }
                       onClick={async () => {
@@ -604,7 +600,7 @@ function OrderStatus() {
                           // 1. Call payment API (simulate or real)
                           await paymentSomething({
                             fromAccountNumber: paymentDetails.accNumber,
-                            toBusinessAccount: paymentDetails.toBusinessAccount,
+                            toBusinessAccount: "570-8705-845-8958", // fixed
                             amount: Number(order.amountToPay || 0) + 5,
                             details: paymentDetails.details
                           });
@@ -635,8 +631,8 @@ function OrderStatus() {
                             paymentAmount: Number(order.amountToPay || 0) + 5
                           }));
                           setShowAddMethodModal(false);
-                        } catch (error) {
-                          alert("Payment failed. Please try again.");
+                        } catch (error) {0
+                          alert(error.response?.data.error || "Payment failed. Please try again.");
                         }
                       }}
                     >
