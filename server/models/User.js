@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema({
   lastLogin: Date,
   isConfirmed: { type: Boolean, default: false }
 });
-
+// heloo
 userSchema.methods.hasPermission = function(permission) {
   return this.permissions.includes(permission);
 };
