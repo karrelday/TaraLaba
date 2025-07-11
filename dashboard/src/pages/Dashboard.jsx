@@ -25,7 +25,7 @@ const Dashboard = () => {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://192.168.9.27:1337/fetchorder");
+      const response = await axios.get("http://192.168.100.147:5173/fetchorder");
       const data = Array.isArray(response.data) ? response.data : [];
       console.log("Fetched orders:", data);
       setOrders(data);
@@ -97,7 +97,7 @@ const Dashboard = () => {
         return;
       }
 
-      const response = await axios.put(`http://192.168.9.27:1337/updateorder/${order._id}`, {
+      const response = await axios.put(`http://192.168.100.147:5173/updateorder/${order._id}`, {
         status: newStatus
       }, {
         headers: { 

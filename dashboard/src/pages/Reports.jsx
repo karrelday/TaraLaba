@@ -39,7 +39,7 @@ const Reports = () => {
     setLoading(true);
     try {
       const userId = localStorage.getItem('userId');
-      const response = await axios.get('http://192.168.9.27:1337/fetchorder', {
+      const response = await axios.get('http://192.168.100.147:5173/fetchorder', {
         headers: {
           'user-id': userId
         }
@@ -375,4 +375,4 @@ const Reports = () => {
   );
 };
 
-export default Reports; 
+export default Reports;

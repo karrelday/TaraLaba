@@ -47,7 +47,7 @@ function OrderStatus() {
   useEffect(() => {
     const fetchOrders = async () => {
       const userId = localStorage.getItem('userId');
-      const response = await axios.get(`http://192.168.9.27:1337/orders/user/${userId}`, {
+      const response = await axios.get(`http://192.168.100.147:5173/orders/user/${userId}`, {
         headers: { 'user-id': userId }
       });
       setOrders(response.data);
@@ -66,7 +66,7 @@ function OrderStatus() {
     }
     try {
       const userId = localStorage.getItem('userId');
-      const response = await axios.put(`http://192.168.9.27:1337/updateorder/${order._id}`, {
+      const response = await axios.put(`http://192.168.100.147:5173/updateorder/${order._id}`, {
         status: status
       }, {
         headers: { 
@@ -107,7 +107,7 @@ function OrderStatus() {
     setIsDownloading(true);
     try {
       const response = await axios.get(
-        `http://192.168.9.27:1337/receipt/${orderId}`,
+        `http://192.168.100.147:5173/receipt/${orderId}`,
         {
           headers: { 'user-id': localStorage.getItem('userId') },
           responseType: 'blob'
@@ -138,7 +138,7 @@ function OrderStatus() {
     if (!window.confirm("Are you sure you want to cancel this order?")) return;
     try {
       const userId = localStorage.getItem('userId');
-      const response = await axios.put(`http://192.168.9.27:1337/updateorder/${order._id}`, {
+      const response = await axios.put(`http://192.168.100.147:5173/updateorder/${order._id}`, {
         status: "Cancelled"
       }, {
         headers: { 
@@ -607,7 +607,7 @@ function OrderStatus() {
 
                           // 2. Update order as paid in the backend
                           await axios.put(
-                            `http://192.168.9.27:1337/updateorder/${order._id}`,
+                            `http://192.168.100.147:5173/updateorder/${order._id}`,
                             {
                               isPaid: true,
                               paymentMethod: selectedPayment,

@@ -839,3 +839,60 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   z-index: 1;
 }
 
+/* Footer Styles */
+.home-footer {
+  width: 100%;
+  background: #f1f5fb;
+  padding: 24px 0;
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 32px;
+}
+
+.home-footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  align-items: center;
+}
+
+.home-footer-link {
+  text-decoration: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.08rem;
+  transition: color 0.2s;
+}
+
+.home-footer-link.facebook {
+  color: #2563eb;
+}
+
+.home-footer-link.facebook:hover {
+  color: #1746a0;
+}
+
+.home-footer-link.instagram {
+  color: #e1306c;
+}
+
+.home-footer-link.instagram:hover {
+  color: #ad1457;
+}
+
+.home-footer-link.gmail {
+  color: #ea4335;
+}
+
+.home-footer-link.gmail:hover {
+  color: #b71c1c;
+}
+
+.home-footer-copyright {
+  margin-top: 12px;
+  color: #666;
+  font-size: 0.95rem;
+}
+

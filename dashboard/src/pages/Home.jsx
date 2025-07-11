@@ -9,6 +9,9 @@ import card3Img from "../pictures/Promo3.jpg";
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { motion } from "framer-motion";
+import FacebookIcon from '@mui/icons-material/Facebook';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import EmailIcon from '@mui/icons-material/Email';
 
 function Home() {
   return (
@@ -250,6 +253,27 @@ function Home() {
           </MapContainer>
         </div>
       </motion.div>
+
+      {/* Footer with Social Links */}
+      <footer className="home-footer">
+        <div className="home-footer-links">
+          <a href="https://www.facebook.com/taralaba.ph/" target="_blank" rel="noopener noreferrer" className="home-footer-link facebook">
+            <FacebookIcon fontSize="medium" />
+            Facebook
+          </a>
+          <a href="https://www.instagram.com/taralaba.social?fbclid=IwY2xjawLd_nRleHRuA2FlbQIxMABicmlkETFHN29KRDg3eFY1bklPSVNNAR4AyjE-R0hcKDpLje_3yafeQvlvFuxXp6PBKZUJEMYf5PVSf_LSGDuJmfTqtw_aem_7dD4iocYwXzDr0-6is50Tg" target="_blank" rel="noopener noreferrer" className="home-footer-link instagram">
+            <InstagramIcon fontSize="medium" />
+            Instagram
+          </a>
+          <a href="mailto:taralaba00@gmail.com" className="home-footer-link gmail">
+            <EmailIcon fontSize="medium" />
+            Gmail
+          </a>
+        </div>
+        <div className="home-footer-copyright">
+          &copy; {new Date().getFullYear()} TaraLaba Laundry Cafe. All rights reserved.
+        </div>
+      </footer>
     </div>
   );
 }

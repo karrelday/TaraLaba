@@ -19,6 +19,10 @@ function Login() {
   const [newPassword, setNewPassword] = useState("");
   const [forgotMsg, setForgotMsg] = useState("");
 
+  // OTP input state for 6 digits
+  const [otpDigits, setOtpDigits] = useState(["", "", "", "", "", ""]);
+  const otpInputs = [];
+
   function handleChange(event) {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -31,7 +35,7 @@ function Login() {
   async function handleLogin(event) {
     event.preventDefault();
     try {
-     const response = await fetch("http://192.168.9.27:1337/login", {
+     const response = await fetch("http://192.168.100.147:1337/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +87,7 @@ function Login() {
     e.preventDefault();
     setForgotMsg("");
     try {
-      const res = await fetch("http://192.168.9.27:1337/forgot-password", {
+      const res = await fetch("http://192.168.100.147:1337/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: forgotEmail }),
@@ -100,14 +104,60 @@ function Login() {
     }
   }
 
+  // Handle OTP digit input
+  function handleOtpChange(e, idx) {
+    const val = e.target.value.replace(/[^0-9]/g, "");
+    if (!val) {
+      // If cleared, just clear this box
+      setOtpDigits(prev => {
+        const arr = [...prev];
+        arr[idx] = "";
+        return arr;
+      });
+      return;
+    }
+    setOtpDigits(prev => {
+      const arr = [...prev];
+      arr[idx] = val[0];
+      return arr;
+    });
+    // Move to next input if not last
+    if (val && idx < 5) {
+      const next = document.getElementById(`otp-input-${idx+1}`);
+      if (next) next.focus();
+    }
+  }
+  function handleOtpKeyDown(e, idx) {
+    if (e.key === "Backspace" && !otpDigits[idx] && idx > 0) {
+      const prev = document.getElementById(`otp-input-${idx-1}`);
+      if (prev) prev.focus();
+    }
+  }
+  function handleOtpPaste(e) {
+    const paste = e.clipboardData.getData("text").replace(/[^0-9]/g, "");
+    if (paste.length === 6) {
+      setOtpDigits(paste.split(""));
+      setTimeout(() => {
+        const last = document.getElementById("otp-input-5");
+        if (last) last.focus();
+      }, 0);
+      e.preventDefault();
+    }
+  }
+
   async function handleResetPassword(e) {
     e.preventDefault();
     setForgotMsg("");
+    const code = otpDigits.join("");
+    if (code.length !== 6) {
+      setForgotMsg("Please enter the 6 digit OTP code.");
+      return;
+    }
     try {
-      const res = await fetch("http://192.168.9.27:1337/reset-password", {
+      const res = await fetch("http://192.168.100.147:1337/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: forgotEmail, code: resetCode, newPassword }),
+        body: JSON.stringify({ email: forgotEmail, code, newPassword }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -116,7 +166,7 @@ function Login() {
           setShowForgot(false);
           setForgotStep(1);
           setForgotEmail("");
-          setResetCode("");
+          setOtpDigits(["", "", "", "", "", ""]);
           setNewPassword("");
           setForgotMsg("");
         }, 2000);
@@ -254,19 +304,25 @@ function Login() {
                 {forgotMsg && <div className={forgotMsg.includes('sent') ? 'forgot-success' : 'forgot-error'}>{forgotMsg}</div>}
               </form>
             ) : (
-              <form onSubmit={handleResetPassword} className="forgot-form">
-                <h3 className="forgot-title">Reset Password</h3>
-                <TextField
-                  type="text"
-                  placeholder="Enter reset code"
-                  value={resetCode}
-                  onChange={e => setResetCode(e.target.value)}
-                  required
-                  fullWidth
-                  className="forgot-input"
-                  InputProps={{ style: { background: 'rgba(22,28,36,0.95)', color: '#fff', borderRadius: 6 } }}
-                  InputLabelProps={{ style: { color: '#fff' } }}
-                />
+              <form onSubmit={handleResetPassword} className="forgot-form otp-form">
+                <h3 className="forgot-title">OTP Authentication</h3>
+                <div className="otp-desc">Enter the 6 digit OTP sent to your email.</div>
+                <div className="otp-inputs" onPaste={handleOtpPaste}>
+                  {[0,1,2,3,4,5].map(idx => (
+                    <input
+                      key={idx}
+                      id={`otp-input-${idx}`}
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={1}
+                      className="otp-box"
+                      value={otpDigits[idx]}
+                      onChange={e => handleOtpChange(e, idx)}
+                      onKeyDown={e => handleOtpKeyDown(e, idx)}
+                      autoFocus={idx === 0}
+                    />
+                  ))}
+                </div>
                 <TextField
                   type="password"
                   placeholder="Enter new password"
@@ -275,13 +331,11 @@ function Login() {
                   required
                   fullWidth
                   className="forgot-input"
-                  InputProps={{ style: { background: 'rgba(22,28,36,0.95)', color: '#fff', borderRadius: 6 } }}
-                  InputLabelProps={{ style: { color: '#fff' } }}
                 />
-                <Button className="forgot-btn" variant="contained" type="submit" fullWidth>
+                <Button className="forgot-btn otp-btn" variant="contained" type="submit" fullWidth>
                   Update Password
                 </Button>
-                {forgotMsg && <div className={forgotMsg.includes('updated') ? 'forgot-success' : 'forgot-error'}>{forgotMsg}</div>}
+                {forgotMsg && <div className={forgotMsg.includes('updated') ? 'forgot-success otp-success' : 'forgot-error otp-error'}>{forgotMsg}</div>}
               </form>
             )}
           </div>

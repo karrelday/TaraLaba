@@ -27,6 +27,8 @@ function SignUp() {
   const [otp, setOtp] = useState('');
   const [emailForOtp, setEmailForOtp] = useState('');
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [signupOtpDigits, setSignupOtpDigits] = useState(["", "", "", "", "", ""]);
   const navigate = useNavigate();
 
   // Only allow letters and spaces for name fields
@@ -52,9 +54,11 @@ function SignUp() {
     }
     setIsVerifyingOtp(true);
     try {
-      await axios.post('http://192.168.9.27:1337/send-signup-otp', { email: formData.email });
+      await axios.post('http://192.168.100.147:1337/send-signup-otp', { email: formData.email });
       setOtpSent(true);
       setEmailForOtp(formData.email);
+      setOtp("");
+      setOtpVerified(false);
       alert('Verification code sent to your email.');
     } catch (error) {
       alert(error.response?.data?.message || 'Failed to send OTP.');
@@ -62,17 +66,57 @@ function SignUp() {
     setIsVerifyingOtp(false);
   }
 
+  function handleSignupOtpChange(e, idx) {
+    const val = e.target.value.replace(/[^0-9]/g, "");
+    if (!val) {
+      setSignupOtpDigits(prev => {
+        const arr = [...prev];
+        arr[idx] = "";
+        return arr;
+      });
+      return;
+    }
+    setSignupOtpDigits(prev => {
+      const arr = [...prev];
+      arr[idx] = val[0];
+      return arr;
+    });
+    if (val && idx < 5) {
+      const next = document.getElementById(`signup-otp-input-${idx+1}`);
+      if (next) next.focus();
+    }
+  }
+  function handleSignupOtpKeyDown(e, idx) {
+    if (e.key === "Backspace" && !signupOtpDigits[idx] && idx > 0) {
+      const prev = document.getElementById(`signup-otp-input-${idx-1}`);
+      if (prev) prev.focus();
+    }
+  }
+  function handleSignupOtpPaste(e) {
+    const paste = e.clipboardData.getData("text").replace(/[^0-9]/g, "");
+    if (paste.length === 6) {
+      setSignupOtpDigits(paste.split(""));
+      setTimeout(() => {
+        const last = document.getElementById("signup-otp-input-5");
+        if (last) last.focus();
+      }, 0);
+      e.preventDefault();
+    }
+  }
+
   async function handleVerifyOtp(event) {
     event.preventDefault();
-    if (!otp) {
-      alert('Please enter the OTP sent to your email.');
+    const code = signupOtpDigits.join("");
+    if (!code || code.length !== 6) {
+      alert('Please enter the 6 digit OTP sent to your email.');
       return;
     }
     setIsVerifyingOtp(true);
     try {
-      await axios.post('http://192.168.9.27:1337/verify-signup-otp', { email: emailForOtp, code: otp });
+      await axios.post('http://192.168.100.147:1337/verify-signup-otp', { email: emailForOtp, code });
       alert('OTP verified! You can now complete your registration.');
-      setOtpSent(false); // Allow registration
+      setOtpVerified(true);
+      setOtpSent(false); // Hide OTP form, show registration
     } catch (error) {
       alert(error.response?.data?.message || 'OTP verification failed.');
     }
@@ -81,7 +125,7 @@ function SignUp() {
 
   async function handleSignUp(event) {
     event.preventDefault();
-    if (otpSent) {
+    if (!otpVerified) {
       alert('Please verify the OTP sent to your email before signing up.');
       return;
     }
@@ -98,7 +142,7 @@ function SignUp() {
     }
 
     try {
-      const { data: users } = await axios.get("http://192.168.9.27:1337/fetchusers");
+      const { data: users } = await axios.get("http://192.168.100.147:1337/fetchusers");
       const usernameExists = users.some((user) => user.userName === formData.userName);
       const emailExists = users.some((user) => user.email === formData.email);
 
@@ -121,7 +165,7 @@ function SignUp() {
       dataToSend.userId = generatedUserId;
       dataToSend.approved = false; // Mark as not approved
 
-      await axios.post("http://192.168.9.27:1337/addusers", dataToSend);
+      await axios.post("http://192.168.100.147:1337/addusers", dataToSend);
       alert("Account created successfully! You can now log in.");
       navigate('/login');
     } catch (error) {
@@ -140,114 +184,123 @@ function SignUp() {
         <div className='signup-box'>
           <h3 className='signUpName'>TaraLaba</h3>
           <h2 className='createAccount'>Create Account</h2>  
-          <form onSubmit={otpSent ? handleVerifyOtp : handleSendOtp} className='form'>
-            <div className="name-fields">
-              <TextField
-                type="text"
-                name="firstName"
-                label="First Name"
-                value={formData.firstName}
-                onChange={handleChange}
-                required
-                fullWidth
-                className="signupField"
-              />
-              <TextField
-                type="text"
-                name="lastName"
-                label="Last Name"
-                value={formData.lastName}
-                onChange={handleChange}
-                required
-                fullWidth
-                className="signupField"
-              />
-            </div>
-            <TextField
-              type="text"
-              name="middleName"
-              label="Middle Name"
-              value={formData.middleName}
-              onChange={handleChange}
-              fullWidth
-              className="signupField"
-            />
-            <TextField
-              type="text"
-              name="userName"
-              label="Username"
-              value={formData.userName}
-              onChange={handleChange}
-              required
-              fullWidth
-              className="signupField"
-            />
-            <TextField
-              type="email"
-              name="email"
-              label="Email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              fullWidth
-              className="signupField"
-            />
-            <div className="password-container">
-              <TextField
-                type={showPassword ? "text" : "password"}
-                name="password"
-                label="Password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                fullWidth
-                className="signupField"
-              />
-              <IconButton className='eyeIcon' onClick={() => setShowPassword(prev => !prev)}>
-                {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-              </IconButton>
-            </div>
-            <div className="password-container">
-              <TextField
-                type={showConfirmPassword ? "text" : "password"}
-                name="confirmPassword"
-                label="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                fullWidth
-                className="signupField"
-              />
-              <IconButton className='eyeIcon' onClick={() => setShowConfirmPassword(prev => !prev)}>
-                {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-              </IconButton>
-            </div>
-            {!otpSent && (
-              <Button className="create" variant="contained" type="submit" startIcon={<PersonAddIcon />} fullWidth disabled={isVerifyingOtp}>
-                Send OTP
-              </Button>
-            )}
-            {otpSent && (
-              <>
+          {/* Step 1: Email/OTP */}
+          {!otpVerified && (
+            <form onSubmit={otpSent ? handleVerifyOtp : handleSendOtp} className='form'>
+              <div className="name-fields">
                 <TextField
                   type="text"
-                  name="otp"
-                  label="Enter OTP"
-                  value={otp}
-                  onChange={e => setOtp(e.target.value)}
+                  name="firstName"
+                  label="First Name"
+                  value={formData.firstName}
+                  onChange={handleChange}
                   required
                   fullWidth
                   className="signupField"
-                  style={{ marginTop: 16 }}
                 />
+                <TextField
+                  type="text"
+                  name="lastName"
+                  label="Last Name"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  className="signupField"
+                />
+              </div>
+              <TextField
+                type="text"
+                name="middleName"
+                label="Middle Name"
+                value={formData.middleName}
+                onChange={handleChange}
+                fullWidth
+                className="signupField"
+              />
+              <TextField
+                type="text"
+                name="userName"
+                label="Username"
+                value={formData.userName}
+                onChange={handleChange}
+                required
+                fullWidth
+                className="signupField"
+              />
+              <TextField
+                type="email"
+                name="email"
+                label="Email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                fullWidth
+                className="signupField"
+              />
+              <div className="password-container">
+                <TextField
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  label="Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  className="signupField"
+                />
+                <IconButton className='eyeIcon' onClick={() => setShowPassword(prev => !prev)}>
+                  {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                </IconButton>
+              </div>
+              <div className="password-container">
+                <TextField
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  className="signupField"
+                />
+                <IconButton className='eyeIcon' onClick={() => setShowConfirmPassword(prev => !prev)}>
+                  {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                </IconButton>
+              </div>
+              {!otpSent && (
                 <Button className="create" variant="contained" type="submit" startIcon={<PersonAddIcon />} fullWidth disabled={isVerifyingOtp}>
-                  Verify OTP
+                  Send OTP
                 </Button>
-              </>
-            )}
-          </form>
-          {/* Only show registration button after OTP is verified */}
-          {!otpSent && (
+              )}
+              {otpSent && (
+                <>
+                  <div className="otp-desc">Enter the 6 digit OTP sent to your email.</div>
+                  <div className="otp-inputs" onPaste={handleSignupOtpPaste}>
+                    {[0,1,2,3,4,5].map(idx => (
+                      <input
+                        key={idx}
+                        id={`signup-otp-input-${idx}`}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        className="otp-box"
+                        value={signupOtpDigits[idx]}
+                        onChange={e => handleSignupOtpChange(e, idx)}
+                        onKeyDown={e => handleSignupOtpKeyDown(e, idx)}
+                        autoFocus={idx === 0}
+                      />
+                    ))}
+                  </div>
+                  <Button className="create" variant="contained" type="submit" startIcon={<PersonAddIcon />} fullWidth disabled={isVerifyingOtp}>
+                    Verify OTP
+                  </Button>
+                </>
+              )}
+            </form>
+          )}
+          {/* Step 2: Registration (only after OTP verified) */}
+          {otpVerified && (
             <form onSubmit={handleSignUp}>
               <Button className="create" variant="contained" type="submit" startIcon={<PersonAddIcon />} fullWidth>
                 Create Account
