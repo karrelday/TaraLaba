@@ -29,11 +29,19 @@ function SignUp() {
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const navigate = useNavigate();
 
+  // Only allow letters and spaces for name fields
   function handleChange(event) {
     const { name, value } = event.target;
-    // Prevent role and approved from being changed by user
     if (name === 'role' || name === 'approved' || name === 'userId') return;
-    setFormData(prev => ({ ...prev, [name]: value }));
+
+    // Prevent numbers in name fields
+    if (["firstName", "lastName", "middleName"].includes(name)) {
+      // Allow only letters and spaces
+      const filtered = value.replace(/[^a-zA-Z\s]/g, "");
+      setFormData(prev => ({ ...prev, [name]: filtered }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   }
 
   async function handleSendOtp(event) {
