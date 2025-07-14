@@ -35,7 +35,7 @@ function Login() {
   async function handleLogin(event) {
     event.preventDefault();
     try {
-     const response = await fetch("http://192.168.100.147:1337/login", {
+     const response = await fetch("http://192.168.9.27:1337/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,7 +87,7 @@ function Login() {
     e.preventDefault();
     setForgotMsg("");
     try {
-      const res = await fetch("http://192.168.100.147:1337/forgot-password", {
+      const res = await fetch("http://192.168.9.27:1337/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: forgotEmail }),
@@ -154,7 +154,7 @@ function Login() {
       return;
     }
     try {
-      const res = await fetch("http://192.168.100.147:1337/reset-password", {
+      const res = await fetch("http://192.168.9.27:1337/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: forgotEmail, code, newPassword }),

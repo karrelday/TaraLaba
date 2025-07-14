@@ -44,7 +44,7 @@ function Sidebar({ onToggle }) {
   useEffect(() => {
     const fetchNotificationCount = async () => {
       try {
-        const response = await axios.get('http://192.168.100.147:5173/notifications', {
+        const response = await axios.get('http://192.168.9.27:1337/notifications', {
           headers: { 'user-id': localStorage.getItem('userId') }
         });
         setUnreadNotifications(response.data.length);
@@ -152,14 +152,7 @@ function Sidebar({ onToggle }) {
             </Link>
           </div>
 
-          {userRole === 'admin' && (
-            <div className={`menu ${isActive("/settings")}`}>
-              <SettingsIcon className="icon" />
-              <Link to="" className="link" onClick={() => isMobile && setIsOpen(false)}>
-                <p>Settings</p>
-              </Link>
-            </div>
-          )}
+        
 
           <hr />
           <div className="menu">

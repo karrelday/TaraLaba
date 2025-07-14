@@ -53,12 +53,14 @@ function UserManagement() {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://192.168.100.147:5173/fetchusers', {
+      const response = await axios.get('http://192.168.9.27:1337/fetchusers', {
         headers: { 'user-id': localStorage.getItem('userId') }
       });
-      setUsers(response.data);
+      // Ensure users is always an array
+      setUsers(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       showNotification('Error fetching users', 'error');
+      setUsers([]); // fallback to empty array on error
     }
   };
 
@@ -108,12 +110,12 @@ function UserManagement() {
     event.preventDefault();
     try {
       if (editingUser) {
-        await axios.put(`http://192.168.100.147:5173/updateuser/${editingUser._id}`, formData, {
+        await axios.put(`http://192.168.9.27:5173/updateuser/${editingUser._id}`, formData, {
           headers: { 'user-id': localStorage.getItem('userId') }
         });
         showNotification('User updated successfully');
       } else {
-        await axios.post('http://192.168.100.147:5173/addusers', formData, {
+        await axios.post('http://192.168.9.27:5173/addusers', formData, {
           headers: { 'user-id': localStorage.getItem('userId') }
         });
         showNotification('User created successfully');
@@ -129,7 +131,7 @@ function UserManagement() {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
 
     try {
-      await axios.delete(`http://192.168.100.147:5173/deleteuser/${userId}`, {
+      await axios.delete(`http://192.168.9.27:5173/deleteuser/${userId}`, {
         headers: { 'user-id': localStorage.getItem('userId') }
       });
       showNotification('User deleted successfully');
@@ -141,7 +143,7 @@ function UserManagement() {
 
   const handleConfirmUser = async (userId) => {
     try {
-      await axios.post(`http://192.168.100.147:5173/confirmuser/${userId}`, {}, {
+      await axios.post(`http://192.168.9.27:5173/confirmuser/${userId}`, {}, {
         headers: { 'user-id': localStorage.getItem('userId') }
       });
       showNotification('User confirmed successfully');
@@ -152,15 +154,17 @@ function UserManagement() {
   };
 
   // Filter users based on search term
-  const filteredUsers = users.filter(user => {
-    const searchLower = searchTerm.toLowerCase();
-    return (
-      (user.firstName && user.firstName.toLowerCase().includes(searchLower)) ||
-      (user.lastName && user.lastName.toLowerCase().includes(searchLower)) ||
-      (user.userName && user.userName.toLowerCase().includes(searchLower)) ||
-      (user.email && user.email.toLowerCase().includes(searchLower))
-    );
-  });
+  const filteredUsers = Array.isArray(users)
+    ? users.filter(user => {
+        const searchLower = searchTerm.toLowerCase();
+        return (
+          (user.firstName && user.firstName.toLowerCase().includes(searchLower)) ||
+          (user.lastName && user.lastName.toLowerCase().includes(searchLower)) ||
+          (user.userName && user.userName.toLowerCase().includes(searchLower)) ||
+          (user.email && user.email.toLowerCase().includes(searchLower))
+        );
+      })
+    : [];
 
   return (
     <div className="app-container">
