@@ -98,11 +98,13 @@ const Reports = () => {
       const amount = parseFloat(order.amountToPay) || 0;
       return sum + amount;
     }, 0);
-    const completedOrders = filteredOrders.filter(order => 
-      order.status?.toLowerCase() === 'completed'
+    // FIX: Treat both 'completed' and 'delivered' as completed orders
+    const completedOrders = filteredOrders.filter(order =>
+      order.status &&
+      ['completed', 'delivered'].includes(order.status.toLowerCase())
     ).length;
     const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
-    
+
     // Calculate service type distribution
     const serviceTypes = filteredOrders.reduce((acc, order) => {
       const type = order.serviceType || 'Unknown';

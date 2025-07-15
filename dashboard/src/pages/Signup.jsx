@@ -113,7 +113,7 @@ function SignUp() {
     }
     setIsVerifyingOtp(true);
     try {
-      await axios.post('http://192.168.9.27:5173/verify-signup-otp', { email: emailForOtp, code });
+      await axios.post('http://192.168.9.27:1337/verify-signup-otp', { email: emailForOtp, code });
       alert('OTP verified! You can now complete your registration.');
       setOtpVerified(true);
       setOtpSent(false); // Hide OTP form, show registration

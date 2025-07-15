@@ -364,25 +364,35 @@ app.get("/fetchorder/id/:orderId", authenticateUser, async (req, res) => {
 // Add a new order
 app.post("/addorder", authenticateUser, async (req, res) => {
   try {
-    console.log("\n=== Starting Order Creation ===");
-    console.log("Authenticated user:", req.user._id);
-    console.log("Received order data:", req.body);
-    
     // Ensure customerId is set to the authenticated user's ID
     const orderData = {
       ...req.body,
       customerId: req.user._id
     };
-    console.log("Creating order with data:", JSON.stringify(orderData, null, 2));
-
     const newOrder = new Order(orderData);
     const savedOrder = await newOrder.save();
-    console.log("Saved order to database:", JSON.stringify(savedOrder, null, 2));
-    
+
+    // Send email to user
+    const user = await User.findById(orderData.customerId);
+    if (user && user.email) {
+      await sendOrderEmail(
+        user.email,
+        "Order Placed Successfully",
+        `Hi ${user.firstName}, your order #${savedOrder.orderId || savedOrder._id} has been placed.`
+      );
+    }
+
+    // Create notification for the user (optional)
+    await Notification.create({
+      userId: req.user._id,
+      orderId: savedOrder._id,
+      message: "Your order has been placed successfully.",
+      type: "alert",
+      createdBy: req.user._id
+    });
+
     res.status(201).json(savedOrder);
   } catch (err) {
-    console.error("Error adding order:", err);
-    console.error("Error stack:", err.stack);
     res.status(400).json({ message: err.message });
   }
 });
@@ -406,6 +416,18 @@ app.put("/updateorder/:orderId", authenticateUser, async (req, res) => {
 
     if (!updatedOrder) {
       return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Send email to user if status changed
+    if (req.body.status) {
+      const user = await User.findById(updatedOrder.customerId);
+      if (user && user.email) {
+        await sendOrderEmail(
+          user.email,
+          "Order Status Updated",
+          `Hi ${user.firstName}, your order #${updatedOrder.orderId || updatedOrder._id} status is now "${updatedOrder.status}".`
+        );
+      }
     }
 
     res.json({ message: "Order updated", order: updatedOrder });
@@ -739,6 +761,16 @@ app.post("/verify-signup-otp", async (req, res) => {
   delete signupOtps[email];
   res.json({ message: "OTP verified. You can now complete your registration." });
 });
+
+// Utility function to send order-related emails
+async function sendOrderEmail(to, subject, text) {
+  await transporter.sendMail({
+    from: '"TaraLaba" <taralaba00@gmail.com>',
+    to,
+    subject,
+    text
+  });
+}
 
 // Start the server
 const PORT = 1337;

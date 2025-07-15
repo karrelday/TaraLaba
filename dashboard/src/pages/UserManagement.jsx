@@ -110,12 +110,12 @@ function UserManagement() {
     event.preventDefault();
     try {
       if (editingUser) {
-        await axios.put(`http://192.168.9.27:5173/updateuser/${editingUser._id}`, formData, {
+        await axios.put(`http://192.168.9.27:1337/updateuser/${editingUser._id}`, formData, {
           headers: { 'user-id': localStorage.getItem('userId') }
         });
         showNotification('User updated successfully');
       } else {
-        await axios.post('http://192.168.9.27:5173/addusers', formData, {
+        await axios.post('http://192.168.9.27:1337/addusers', formData, {
           headers: { 'user-id': localStorage.getItem('userId') }
         });
         showNotification('User created successfully');
@@ -131,7 +131,7 @@ function UserManagement() {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
 
     try {
-      await axios.delete(`http://192.168.9.27:5173/deleteuser/${userId}`, {
+      await axios.delete(`http://192.168.9.27:1337/deleteuser/${userId}`, {
         headers: { 'user-id': localStorage.getItem('userId') }
       });
       showNotification('User deleted successfully');
@@ -143,7 +143,7 @@ function UserManagement() {
 
   const handleConfirmUser = async (userId) => {
     try {
-      await axios.post(`http://192.168.9.27:5173/confirmuser/${userId}`, {}, {
+      await axios.post(`http://192.168.9.27:1337/confirmuser/${userId}`, {}, {
         headers: { 'user-id': localStorage.getItem('userId') }
       });
       showNotification('User confirmed successfully');

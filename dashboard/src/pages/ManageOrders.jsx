@@ -269,6 +269,16 @@ function ManageOrders() {
         message: "Order added successfully!",
         severity: "success"
       });
+
+      // ADD THIS: Show notification in NotificationIcon
+      setNotifications(prev => [
+        {
+          _id: "local-" + Date.now(),
+          message: "Your order has been placed successfully.",
+          time: new Date().toLocaleString()
+        },
+        ...prev
+      ]);
     } catch (error) {
       console.error("Error adding order:", error);
       setNotification({
@@ -772,8 +782,8 @@ function ManageOrders() {
               onClick={async () => {
                 try {
                   await paymentSomething({
-                    fromAccountNumber: "942-3261-675-3156",
-                    toBusinessAccount: "329-8219-700-5792",
+                    fromAccountNumber: orderPaymentAccNumber, // User input
+                    toBusinessAccount: "531-5854-439-7494",   // New fixed business account
                     amount: formData.amountToPay || 300,
                     details: `Payment for laundry order`
                   });

@@ -12,8 +12,40 @@ import { motion } from "framer-motion";
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import EmailIcon from '@mui/icons-material/Email';
+import NotificationIcon from "../components/NotificationIcon";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
 
 function Home() {
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    async function fetchNotifications() {
+      try {
+        const userId = localStorage.getItem("userId");
+        const response = await axios.get("http://192.168.9.27:1337/notifications", {
+          headers: { "user-id": userId }
+        });
+        setNotifications(Array.isArray(response.data) ? response.data : []);
+      } catch {
+        setNotifications([]);
+      }
+    }
+    fetchNotifications();
+  }, []);
+
+  const handleRemoveNotification = async (index) => {
+    const notification = notifications[index];
+    try {
+      await axios.put(
+        `http://192.168.9.27:1337/notifications/${notification._id}/read`,
+        {},
+        { headers: { "user-id": localStorage.getItem("userId") }
+      });
+    } catch {}
+    setNotifications((prev) => prev.filter((_, i) => i !== index));
+  };
+
   return (
     <div
       className="home"
