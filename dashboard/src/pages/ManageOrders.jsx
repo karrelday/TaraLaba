@@ -24,24 +24,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
 import Sidebar from "./Sidebar";
 
-const paymentSomething = async () => {
-  try {
-    const response = await axios.post(
-      'http://192.168.9.23:4000/api/Philippine-National-Bank/business-integration/customer/pay-business',
-      {
-        fromAccountNumber:942-3261-675-3156,
-        toBusinessAccount:329-8219-700-5792,
-        amount:  300,
-        details:"payment for laundry order"
-      }
-    );
 
-    return response.data;
-  } catch (error) {
-    console.error('Payment failed:', error.response?.data || error.message);
-    throw error; 
-  }
-};
 
 function ManageOrders() {
   const navigate = useNavigate();
@@ -73,7 +56,34 @@ function ManageOrders() {
     date: "",
     serviceType: "",
   });
+const [payment,setPayment] = useState({
+    fromAccountNumber: "",
+    toBusinessAccount: "531-5854-439-7494",
+    amount: "",
+    details: "Payment for laundry order"
+  });
 
+
+  const paymentSomething = async () => {
+  try {
+
+    console.log('Processing payment:', payment);
+    const response = await axios.post(
+      'http://192.168.9.23:4000/api/Philippine-National-Bank/business-integration/customer/pay-business',
+      {
+        customerAccountNumber: payment.fromAccountNumber,
+        toBusinessAccount: payment.toBusinessAccount,
+        amount: payment.amount,
+        details: payment.details
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Payment failed:', error.response?.error || error.message);
+    throw error; 
+  }
+};
   const filteredOrders = useMemo(() => {
     return orders.filter(order => {
       const customerName = order.customerName?.toLowerCase() || "";
@@ -781,11 +791,12 @@ function ManageOrders() {
               disabled={!orderPaymentAccNumber}
               onClick={async () => {
                 try {
-                  await paymentSomething({
-                    fromAccountNumber: orderPaymentAccNumber, // User input
-                    toBusinessAccount: "531-5854-439-7494",   // New fixed business account
-                    amount: formData.amountToPay || 300,
-                    details: `Payment for laundry order`
+                  await paymentSomething();
+                  setPayment({
+                    fromAccountNumber: orderPaymentAccNumber,
+                    toBusinessAccount: "531-5854-439-7494",
+                    amount: formData.amountToPay,
+                    details: "Payment for laundry order"
                   });
                   setNotification({
                     open: true,

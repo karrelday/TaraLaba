@@ -217,7 +217,7 @@ function OrderStatus() {
 
       return response.data;
     } catch (error) {
-      console.error('Payment failed:', error.response?.data || error.message);
+      console.error(error);
       throw error;
     }
   };
@@ -600,7 +600,7 @@ function OrderStatus() {
                           // 1. Call payment API (simulate or real)
                           await paymentSomething({
                             fromAccountNumber: paymentDetails.accNumber,
-                            toBusinessAccount: "570-8705-845-8958", // fixed
+                            toBusinessAccount: "531-5854-439-7494", // fixed
                             amount: Number(order.amountToPay || 0) + 5,
                             details: paymentDetails.details
                           });

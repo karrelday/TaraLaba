@@ -9,11 +9,11 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const path = require('path');
 const nodemailer = require('nodemailer');
-
+const dotenv = require('dotenv');
 const app = express();
 app.use(cors());
 app.use(express.json());
-
+dotenv.config();
 // Create uploads directory if it doesn't exist
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
@@ -773,7 +773,7 @@ async function sendOrderEmail(to, subject, text) {
 }
 
 // Start the server
-const PORT = 1337;
+const PORT = process.env.PORT || 1337; // Use port from .env or default to 5173
 const HOST = '0.0.0.0'; // Listen on all network interfaces
 
 app.listen(PORT, HOST, () => {
