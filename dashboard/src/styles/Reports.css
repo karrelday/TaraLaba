@@ -3,10 +3,11 @@
   width: 1200px;
   padding: 24px;
   overflow-y: auto;
-  min-height: 100vh;
+  height: 100vh; /* Changed from min-height to height for scroll to work */
   margin-left: 380px !important; /* Reset margin-left */
   font-family: 'Inter', 'Segoe UI', sans-serif;
   background-color: #f8fafc;
+  
 }
 
 /* Header Section */
