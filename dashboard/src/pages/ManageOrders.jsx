@@ -12,7 +12,8 @@ import {
   InputAdornment,
   CircularProgress,
   Snackbar,
-  Alert
+  Alert,
+  IconButton
 } from "@mui/material";
 import "../styles/ManageOrders.css";
 import ChatBot from "./ChatBot";
@@ -691,7 +692,22 @@ const [payment,setPayment] = useState({
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <CalendarTodayIcon />
+                  <IconButton
+                    aria-label="Set today"
+                    onClick={() => {
+                      const today = new Date();
+                      const yyyy = today.getFullYear();
+                      const mm = String(today.getMonth() + 1).padStart(2, '0');
+                      const dd = String(today.getDate()).padStart(2, '0');
+                      setFormData(prev => ({
+                        ...prev,
+                        date: `${yyyy}-${mm}-${dd}`
+                      }));
+                    }}
+                    size="small"
+                  >
+                    <CalendarTodayIcon />
+                  </IconButton>
                 </InputAdornment>
               ),
             }}

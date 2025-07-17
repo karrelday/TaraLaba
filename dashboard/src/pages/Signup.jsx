@@ -114,11 +114,50 @@ function SignUp() {
     setIsVerifyingOtp(true);
     try {
       await axios.post('http://192.168.9.27:1337/verify-signup-otp', { email: emailForOtp, code });
-      alert('OTP verified! You can now complete your registration.');
-      setOtpVerified(true);
-      setOtpSent(false); // Hide OTP form, show registration
+      // Immediately create account after OTP verification
+      // Validate password length and match before creating account
+      if (formData.password.length < 8) {
+        alert("Password must be at least 8 characters long!");
+        setIsVerifyingOtp(false);
+        return;
+      }
+      if (formData.password !== formData.confirmPassword) {
+        alert("Passwords don't match!");
+        setIsVerifyingOtp(false);
+        return;
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        alert("Please enter a valid email address!");
+        setIsVerifyingOtp(false);
+        return;
+      }
+      // Check for existing username/email
+      const { data: users } = await axios.get("http://192.168.9.27:1337/fetchusers");
+      const usernameExists = users.some((user) => user.userName === formData.userName);
+      const emailExists = users.some((user) => user.email === formData.email);
+      if (usernameExists) {
+        alert("Username already exists!");
+        setIsVerifyingOtp(false);
+        return;
+      }
+      if (emailExists) {
+        alert("Email already registered!");
+        setIsVerifyingOtp(false);
+        return;
+      }
+      // Generate a unique userId
+      const generatedUserId = uuidv4();
+      const dataToSend = { ...formData };
+      delete dataToSend.confirmPassword;
+      dataToSend.role = 'customer';
+      dataToSend.userId = generatedUserId;
+      dataToSend.approved = false;
+      await axios.post("http://192.168.9.27:1337/addusers", dataToSend);
+      alert("Account created successfully! You can now log in.");
+      navigate('/login');
     } catch (error) {
-      alert(error.response?.data?.message || 'OTP verification failed.');
+      alert(error.response?.data?.message || 'OTP verification failed or account creation error.');
     }
     setIsVerifyingOtp(false);
   }
@@ -127,6 +166,11 @@ function SignUp() {
     event.preventDefault();
     if (!otpVerified) {
       alert('Please verify the OTP sent to your email before signing up.');
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      alert("Password must be at least 8 characters long!");
       return;
     }
 
@@ -144,7 +188,9 @@ function SignUp() {
     try {
       const { data: users } = await axios.get("http://192.168.9.27:1337/fetchusers");
       const usernameExists = users.some((user) => user.userName === formData.userName);
-      const emailExists = users.some((user) => user.email === formData.email);
+      // Only check for duplicate Gmail addresses
+      const emailIsGmail = formData.email.trim().toLowerCase().endsWith("@gmail.com");
+      const emailExists = emailIsGmail && users.some((user) => user.email.trim().toLowerCase() === formData.email.trim().toLowerCase());
 
       if (usernameExists) {
         alert("Username already exists!");
@@ -152,7 +198,7 @@ function SignUp() {
       }
 
       if (emailExists) {
-        alert("Email already registered!");
+        alert("This email address is already registered!");
         return;
       }
 
@@ -176,6 +222,51 @@ function SignUp() {
 
   function navigateToLogin() {
     navigate('/login');
+  }
+
+  // Password validation requirements
+  const passwordRequirements = [
+    {
+      label: "At least 8 characters",
+      test: (pw) => pw.length >= 8
+    },
+    {
+      label: "Contains uppercase letter",
+      test: (pw) => /[A-Z]/.test(pw)
+    },
+    {
+      label: "Contains lowercase letter",
+      test: (pw) => /[a-z]/.test(pw)
+    },
+    {
+      label: "Contains a number",
+      test: (pw) => /[0-9]/.test(pw)
+    },
+    {
+      label: "Contains a special character",
+      test: (pw) => /[^A-Za-z0-9]/.test(pw)
+    }
+  ];
+
+  // Resend OTP handler
+  async function handleResendOtp(event) {
+    event.preventDefault();
+    if (!formData.email) {
+      alert('Please enter your email first.');
+      return;
+    }
+    setIsVerifyingOtp(true);
+    try {
+      await axios.post('http://192.168.9.27:1337/send-signup-otp', { email: formData.email });
+      setOtpSent(true);
+      setEmailForOtp(formData.email);
+      setOtp("");
+      setOtpVerified(false);
+      alert('Verification code resent to your email.');
+    } catch (error) {
+      alert(error.response?.data?.message || 'Failed to resend OTP.');
+    }
+    setIsVerifyingOtp(false);
   }
 
   return (
@@ -252,6 +343,28 @@ function SignUp() {
                 <IconButton className='eyeIcon' onClick={() => setShowPassword(prev => !prev)}>
                   {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                 </IconButton>
+                {/* Password validation modal */}
+                {formData.password && (
+                  <div style={{
+                    position: 'absolute',
+                    left: '105%',
+                    top: 0,
+                    background: '#fff',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: 8,
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                    padding: '16px',
+                    minWidth: '220px',
+                    zIndex: 10
+                  }}>
+                    <div style={{ fontWeight: 600, marginBottom: 8, color: '#64748b' }}>Password must have:</div>
+                    {passwordRequirements.map((req, idx) => (
+                      <div key={idx} style={{ color: req.test(formData.password) ? 'green' : '#64748b', fontWeight: req.test(formData.password) ? 600 : 400, marginBottom: 4 }}>
+                        {req.label}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               <div className="password-container">
                 <TextField
@@ -295,16 +408,11 @@ function SignUp() {
                   <Button className="create" variant="contained" type="submit" startIcon={<PersonAddIcon />} fullWidth disabled={isVerifyingOtp}>
                     Verify OTP
                   </Button>
+                  <Button className="create" variant="outlined" onClick={handleResendOtp} fullWidth disabled={isVerifyingOtp} style={{ marginTop: 8 }}>
+                    Resend OTP
+                  </Button>
                 </>
               )}
-            </form>
-          )}
-          {/* Step 2: Registration (only after OTP verified) */}
-          {otpVerified && (
-            <form onSubmit={handleSignUp}>
-              <Button className="create" variant="contained" type="submit" startIcon={<PersonAddIcon />} fullWidth>
-                Create Account
-              </Button>
             </form>
           )}
           <div className="login-link">

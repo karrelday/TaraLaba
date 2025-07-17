@@ -45,21 +45,23 @@ const Navbar = () => {
     }
   }, []);
 
-  // Fetch notifications
+  // Fetch notifications only if not on login/signup and userId exists
   useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const response = await axios.get("http://192.168.9.27:1337/notifications", {
-          headers: { 'user-id': localStorage.getItem('userId') }
-        });
-        setNotifications(response.data);
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-      }
-    };
-
-    fetchNotifications();
-  }, []);
+    const userId = localStorage.getItem('userId');
+    if (location.pathname !== '/login' && location.pathname !== '/signup' && userId) {
+      const fetchNotifications = async () => {
+        try {
+          const response = await axios.get("http://192.168.9.27:1337/notifications", {
+            headers: { 'user-id': userId }
+          });
+          setNotifications(response.data);
+        } catch (error) {
+          console.error("Error fetching notifications:", error);
+        }
+      };
+      fetchNotifications();
+    }
+  }, [location.pathname]);
 
   return (
     <>
@@ -73,7 +75,10 @@ const Navbar = () => {
               Hello, {user.name || 'User'}
             </div>
           )}
-          <NotificationIcon notifications={notifications} />
+          {/* Only show NotificationIcon if not on login or signup page */}
+          {location.pathname !== '/login' && location.pathname !== '/signup' && (
+            <NotificationIcon notifications={notifications} />
+          )}
         </div>
       </div>
     </>

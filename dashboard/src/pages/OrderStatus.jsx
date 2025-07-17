@@ -322,6 +322,24 @@ function OrderStatus() {
                   Save Changes
                 </button>
               )}
+              {/* Delete button for both roles */}
+              <button
+                className="delete"
+                style={{ marginLeft: 8, background: '#e53935', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold' }}
+                onClick={async () => {
+                  if (!window.confirm("Are you sure you want to delete this order? This action cannot be undone.")) return;
+                  try {
+                    const userId = localStorage.getItem('userId');
+                    await axios.delete(`http://192.168.9.27:1337/deleteorder/${order._id || order.orderId}`);
+                    alert("Order deleted successfully.");
+                    navigate("/manage-orders");
+                  } catch (error) {
+                    alert("Failed to delete order. Please try again.");
+                  }
+                }}
+              >
+                Delete
+              </button>
             </div>
             {/* Payment Modal */}
             {showPaymentModal && (
