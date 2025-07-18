@@ -188,11 +188,16 @@ const [payment,setPayment] = useState({
       let updatedData = { ...prev, [name]: value };
       if (name === "laundryWeight") {
         let weight = parseFloat(value);
-        if (weight > 10) weight = 10;
         if (weight < 0) weight = 0;
         updatedData.laundryWeight = weight.toString();
-        const pricePerKg = 30;
-        updatedData.amountToPay = weight ? (weight * pricePerKg).toFixed(2) : "";
+
+        let price = 0;
+        if (weight <= 10) {
+          price = 300;
+        } else {
+          price = 300 + (weight - 10) * 30;
+        }
+        updatedData.amountToPay = weight ? price.toFixed(2) : "";
       }
       if (name === "date") {
         updatedData.date = value;
@@ -200,7 +205,7 @@ const [payment,setPayment] = useState({
       return updatedData;
     });
   }
-
+  
   function validateForm() {
     const errors = {};
     if (!formData.customerName?.trim()) {
@@ -804,7 +809,11 @@ const [payment,setPayment] = useState({
               variant="contained"
               color="secondary"
               style={{ marginLeft: 8 }}
-              disabled={!orderPaymentAccNumber}
+              disabled={
+                !orderPaymentAccNumber ||
+                loading || // Disable while loading
+                !formData.orderId // Disable if order not yet created
+              }
               onClick={async () => {
                 try {
                   await paymentSomething();
