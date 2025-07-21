@@ -2,7 +2,7 @@ import Sidebar from "./Sidebar";
 import ChatBot from "./ChatBot";
 import CardSwap, { Card } from "../components/CardSwap";
 import "../styles/Home.css";
-import backgroundImg from "../pictures/TaraLabaBackground.jpg";
+import backgroundImg from "../pictures/TaralabaBackground.jpg";
 import card1Img from "../pictures/Promo.jpg";
 import card2Img from "../pictures/Promo2.jpg";
 import card3Img from "../pictures/Promo3.jpg";
