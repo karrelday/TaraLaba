@@ -34,7 +34,7 @@ const Notifications = () => {
       setLoading(true);
       console.log('Fetching notifications for userId:', userId);
       
-      const response = await axios.get('http://192.168.9.27:1337/notifications', {
+      const response = await axios.get('https://taralaba.onrender.com/notifications', {
         headers: { 'user-id': userId }
       });
       console.log('Notifications response:', response.data);
@@ -64,7 +64,7 @@ const Notifications = () => {
     try {
       console.log('Marking notification as read:', notificationId);
       
-      await axios.put(`http://192.168.9.27:1337/notifications/${notificationId}/read`, {}, {
+      await axios.put(`https://taralaba.onrender.com/notifications/${notificationId}/read`, {}, {
         headers: { 'user-id': userId }
       });
       

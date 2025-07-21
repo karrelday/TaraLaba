@@ -24,7 +24,7 @@ function Profile() {
   const fetchUserData = async () => {
     try {
       const userId = localStorage.getItem('userId');
-      const response = await axios.get(`http://192.168.9.27:1337/fetchusers`);
+      const response = await axios.get(`https://taralaba.onrender.com/fetchusers`);
       const users = response.data;
       const currentUser = users.find(user => user._id === userId);
       
@@ -81,7 +81,7 @@ function Profile() {
         updateData.password = userData.newPassword;
       }
 
-      await axios.put(`http://192.168.9.27:1337/updateuser/${userId}`, updateData);
+      await axios.put(`https://taralaba.onrender.com/updateuser/${userId}`, updateData);
       showNotification('Profile updated successfully');
       
       // Clear password fields
@@ -190,7 +190,7 @@ function Profile() {
             <Button 
               type="submit" 
               variant="contained" 
-              color="primary"
+              color="primary" 
               sx={{ mt: 3 }}
               fullWidth
             >

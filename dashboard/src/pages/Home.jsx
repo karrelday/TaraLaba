@@ -23,7 +23,7 @@ function Home() {
     async function fetchNotifications() {
       try {
         const userId = localStorage.getItem("userId");
-        const response = await axios.get("http://192.168.9.27:1337/notifications", {
+        const response = await axios.get("https://taralaba.onrender.com/notifications", {
           headers: { "user-id": userId }
         });
         setNotifications(Array.isArray(response.data) ? response.data : []);
@@ -38,7 +38,7 @@ function Home() {
     const notification = notifications[index];
     try {
       await axios.put(
-        `http://192.168.9.27:1337/notifications/${notification._id}/read`,
+        `https://taralaba.onrender.com/notifications/${notification._id}/read`,
         {},
         { headers: { "user-id": localStorage.getItem("userId") }
       });

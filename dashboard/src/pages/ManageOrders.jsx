@@ -70,7 +70,7 @@ const [payment,setPayment] = useState({
 
     console.log('Processing payment:', payment);
     const response = await axios.post(
-      'http://pnb-client.vercel.app/api/Philippine-National-Bank/business-integration/customer/pay-business',
+      'https://pnb-server.vercel.app/api/Philippine-National-Bank/business-integration/customer/pay-business',
       {
         customerAccountNumber: payment.fromAccountNumber,
         toBusinessAccount: payment.toBusinessAccount,
@@ -78,7 +78,7 @@ const [payment,setPayment] = useState({
         details: payment.details
       }
     );
-
+// aaaa
     return response.data;
   } catch (error) {
     console.error('Payment failed:', error.response?.error || error.message);
@@ -142,7 +142,7 @@ const [payment,setPayment] = useState({
       try {
         const userId = localStorage.getItem('userId');
         if (userId) {
-          const response = await axios.get(`http://192.168.9.27:1337/fetchusers/${userId}`);
+          const response = await axios.get(`https://taralaba.onrender.com/fetchusers/${userId}`);
           setCurrentUser(response.data);
         }
       } catch (error) {
@@ -157,7 +157,7 @@ const [payment,setPayment] = useState({
     try {
       const userId = localStorage.getItem('userId');
       const userRole = localStorage.getItem('userRole');
-      const response = await axios.get("http://192.168.9.27:1337/fetchorder", {
+      const response = await axios.get("https://taralaba.onrender.com/fetchorder", {
         headers: { 'user-id': userId }
       });
       let ordersData = Array.isArray(response.data) ? response.data : [];
@@ -262,7 +262,7 @@ const [payment,setPayment] = useState({
       };
       setLoading(true);
       const { data } = await axios.post(
-        "http://192.168.9.27:1337/addorder",
+        "https://taralaba.onrender.com/addorder",
         newOrder,
         {
           headers: {
@@ -312,7 +312,7 @@ const [payment,setPayment] = useState({
     try {
       setLoading(true);
       const idToDelete = order._id || order.orderId;
-      await axios.delete(`http://192.168.9.27:1337/deleteorder/${idToDelete}`);
+      await axios.delete(`https://taralaba.onrender.com/deleteorder/${idToDelete}`);
       setOrders(prevOrders => prevOrders.filter(o => o.orderId !== order.orderId));
       setNotification({
         open: true,
@@ -398,7 +398,7 @@ const [payment,setPayment] = useState({
     try {
       setLoading(true);
       const userId = localStorage.getItem('userId');
-      const response = await axios.put(`http://192.168.9.27:1337/updateorder/${order._id}`, {
+      const response = await axios.put(`https://taralaba.onrender.com/updateorder/${order._id}`, {
         status: "Cancelled"
       }, {
         headers: { 

@@ -47,7 +47,7 @@ function OrderStatus() {
   useEffect(() => {
     const fetchOrders = async () => {
       const userId = localStorage.getItem('userId');
-      const response = await axios.get(`http://192.168.9.27:1337/orders/user/${userId}`, {
+      const response = await axios.get(`https://taralaba.onrender.com/orders/user/${userId}`, {
         headers: { 'user-id': userId }
       });
       setOrders(response.data);
@@ -66,7 +66,7 @@ function OrderStatus() {
     }
     try {
       const userId = localStorage.getItem('userId');
-      const response = await axios.put(`http://192.168.9.27:1337/updateorder/${order._id}`, {
+      const response = await axios.put(`https://taralaba.onrender.com/updateorder/${order._id}`, {
         status: status
       }, {
         headers: { 
@@ -107,7 +107,7 @@ function OrderStatus() {
     setIsDownloading(true);
     try {
       const response = await axios.get(
-        `http://192.168.9.27:1337/receipt/${orderId}`,
+        `https://taralaba.onrender.com/receipt/${orderId}`,
         {
           headers: { 'user-id': localStorage.getItem('userId') },
           responseType: 'blob'
@@ -138,7 +138,7 @@ function OrderStatus() {
     if (!window.confirm("Are you sure you want to cancel this order?")) return;
     try {
       const userId = localStorage.getItem('userId');
-      const response = await axios.put(`http://192.168.9.27:1337/updateorder/${order._id}`, {
+      const response = await axios.put(`https://taralaba.onrender.com/updateorder/${order._id}`, {
         status: "Cancelled"
       }, {
         headers: { 
@@ -206,7 +206,7 @@ function OrderStatus() {
   const paymentSomething = async ({ fromAccountNumber, toBusinessAccount, amount, details }) => {
     try {
       const response = await axios.post(
-        'http://192.168.9.23:4000/api/Philippine-National-Bank/business-integration/customer/pay-business',
+        'https://pnb-server.vercel.app/api/Philippine-National-Bank/business-integration/customer/pay-business',
         {
           customerAccountNumber: fromAccountNumber,
           toBusinessAccount,
@@ -330,7 +330,7 @@ function OrderStatus() {
                   if (!window.confirm("Are you sure you want to delete this order? This action cannot be undone.")) return;
                   try {
                     const userId = localStorage.getItem('userId');
-                    await axios.delete(`http://192.168.9.27:1337/deleteorder/${order._id || order.orderId}`);
+                    await axios.delete(`https://taralaba.onrender.com/deleteorder/${order._id || order.orderId}`);
                     alert("Order deleted successfully.");
                     navigate("/manage-orders");
                   } catch (error) {
@@ -625,7 +625,7 @@ function OrderStatus() {
 
                           // 2. Update order as paid in the backend
                           await axios.put(
-                            `http://192.168.9.27:1337/updateorder/${order._id}`,
+                            `https://taralaba.onrender.com/updateorder/${order._id}`,
                             {
                               isPaid: true,
                               paymentMethod: selectedPayment,

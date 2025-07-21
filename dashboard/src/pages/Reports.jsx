@@ -39,7 +39,7 @@ const Reports = () => {
     setLoading(true);
     try {
       const userId = localStorage.getItem('userId');
-      const response = await axios.get('http://192.168.9.27:1337/fetchorder', {
+      const response = await axios.get('https://taralaba.onrender.com/fetchorder', {
         headers: {
           'user-id': userId
         }
