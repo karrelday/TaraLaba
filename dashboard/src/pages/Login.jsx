@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 import { TextField, IconButton, InputAdornment, Snackbar, Alert, Button } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import loginbg from "../pictures/LogIn.png"; // Corrected image import
 
 function Login() {
   const [formData, setFormData] = useState({ username: "", password: "" });
@@ -188,7 +189,7 @@ function Login() {
       <div className="loginBg">
         <div className="image-content">
           <div className="pic">
-            <img src="./src/pictures/LogIn.png" alt="Laundry illustration" />
+            <img src={loginbg} alt="Laundry illustration" />
           </div>
           <div className="feature-highlight">
             <span className="star-icon">★</span> FEATURE HIGHLIGHT
