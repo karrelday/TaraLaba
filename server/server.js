@@ -49,7 +49,7 @@ const checkPermission = (requiredPermission) => {
 };
 
 // Connect to MongoDB with explicit database name
-mongoose.connect('mongodb://localhost:27017/LaundroData')
+mongoose.connect('mongodb+srv://pluts2nd:GSmvlLX5uGOazVcT@cluster0.tumtpha.mongodb.net/TaraLabaDB?retryWrites=true&w=majority&appName=Cluster0')
   .then(async () => {
     console.log('MongoDB Connected');
     console.log('Database name:', mongoose.connection.db.databaseName);
