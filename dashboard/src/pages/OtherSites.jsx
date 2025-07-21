@@ -18,7 +18,7 @@ const sites = [
   {
     name: "PNB",
     img: pnb,
-    url: "pnb-client.vercel.app",
+    url: "https://pnb-client.vercel.app",
   },
   {
     name: "Jollibee",
@@ -33,12 +33,12 @@ const sites = [
   {
     name: "ITBytes",
     img: itbytes,
-    url: "it-bytes-ui.vercel.app",
+    url: "https://it-bytes-ui.vercel.app",
   },
   {
     name: "Dental Clinic",
     img: dental,
-    url: "molar-record.vercel.app",
+    url: "https://molar-record.vercel.app",
   },
 ];
 
