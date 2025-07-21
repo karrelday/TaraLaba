@@ -12,7 +12,7 @@ const sites = [
   {
     name: "PNB",
     img: "../src/pictures/pnb.png",
-    url: "http://192.168.9.23:5173/",
+    url: "pnb-client.vercel.app",
   },
   {
     name: "Jollibee",
@@ -27,12 +27,12 @@ const sites = [
   {
     name: "ITBytes",
     img: "../src/pictures/itbytes.jpg",
-    url: "http://192.168.9.4:5173/",
+    url: "it-bytes-ui.vercel.app",
   },
   {
     name: "Dental Clinic",
     img: "../src/pictures/Dental.jpg",
-    url: "http://192.168.9.35:5173/",
+    url: "molar-record.vercel.app",
   },
 ];
 

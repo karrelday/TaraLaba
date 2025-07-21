@@ -70,7 +70,7 @@ const [payment,setPayment] = useState({
 
     console.log('Processing payment:', payment);
     const response = await axios.post(
-      'http://192.168.9.23:4000/api/Philippine-National-Bank/business-integration/customer/pay-business',
+      'http://pnb-client.vercel.app/api/Philippine-National-Bank/business-integration/customer/pay-business',
       {
         customerAccountNumber: payment.fromAccountNumber,
         toBusinessAccount: payment.toBusinessAccount,
