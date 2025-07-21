@@ -11,7 +11,11 @@ const path = require('path');
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ['https://tara-laba.vercel.app', 'http://localhost:5173'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 app.use(express.json());
 dotenv.config();
 // Create uploads directory if it doesn't exist
