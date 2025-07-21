@@ -2,36 +2,42 @@ import React, { useState } from "react";
 import Sidebar from "./Sidebar";
 import ChatBot from "./ChatBot";
 import "../styles/OtherSites.css";
+import nbs from "../src/pictures/nbs.jpg";
+import pnb from "../src/pictures/pnb.png";
+import jollibee from "../src/pictures/jalibe.jpg";
+import blended from "../src/pictures/Blended.jpg";
+import itbytes from "../src/pictures/itbytes.jpg";
+import dental from "../src/pictures/Dental.jpg";
 
 const sites = [
   {
     name: "National Book Store",
-    img: "../src/pictures/nbs.jpg", // Update with your image path
+    img: nbs,
     url: "http://192.168.9.16:5173/",
   },
   {
     name: "PNB",
-    img: "../src/pictures/pnb.png",
+    img: pnb,
     url: "pnb-client.vercel.app",
   },
   {
     name: "Jollibee",
-    img: "../src/pictures/jalibe.jpg",
+    img: jollibee,
     url: "http://192.168.9.37:5173/",
   },
   {
     name: "Blended",
-    img: "../src/pictures/Blended.jpg",
+    img: blended,
     url: "http://192.168.9.7:5173/",
   },
   {
     name: "ITBytes",
-    img: "../src/pictures/itbytes.jpg",
+    img: itbytes,
     url: "it-bytes-ui.vercel.app",
   },
   {
     name: "Dental Clinic",
-    img: "../src/pictures/Dental.jpg",
+    img: dental,
     url: "molar-record.vercel.app",
   },
 ];

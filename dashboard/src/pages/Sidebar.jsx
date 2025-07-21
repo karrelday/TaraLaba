@@ -98,7 +98,7 @@ function Sidebar({ onToggle }) {
       )}
 
       <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
-        <img src="../src/pictures/TaraLaba.jpg" alt="TaraLaba Logo" className="logo" />
+        <img src={Logo} alt="TaraLaba Logo" className="logo" />
 
         <div className="menu-items">
           <div className={`menu ${isActive("/home")}`}>
