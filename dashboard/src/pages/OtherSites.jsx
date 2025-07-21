@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import Sidebar from "./Sidebar";
 import ChatBot from "./ChatBot";
 import "../styles/OtherSites.css";
-import nbs from "../src/pictures/nbs.jpg";
-import pnb from "../src/pictures/pnb.png";
-import jollibee from "../src/pictures/jalibe.jpg";
-import blended from "../src/pictures/Blended.jpg";
-import itbytes from "../src/pictures/itbytes.jpg";
-import dental from "../src/pictures/Dental.jpg";
+import nbs from "../pictures/nbs.jpg";
+import pnb from "../pictures/pnb.png";
+import jollibee from "../pictures/jalibe.jpg";
+import blended from "../pictures/Blended.jpg";
+import itbytes from "../pictures/itbytes.jpg";
+import dental from "../pictures/Dental.jpg";
 
 const sites = [
   {
